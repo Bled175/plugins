@@ -1,0 +1,30 @@
+name: SMoney
+version: 1.0
+main: com.yourname.smoney.Main
+api-version: 1.21
+
+commands:
+  money:
+    description: Check or send money
+    usage: /money
+    permission: smoney.money
+
+  shop:
+    description: Open shop
+    usage: /shop
+    permission: smoney.shop
+
+  quest:
+    description: Open quest menu
+    usage: /quest
+    permission: smoney.quest
+
+permissions:
+  smoney.money:
+    default: true
+
+  smoney.shop:
+    default: true
+
+  smoney.quest:
+    default: true

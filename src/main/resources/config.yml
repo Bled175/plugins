@@ -1,0 +1,8 @@
+transactions:
+  tx-001:
+    buyer: uuid
+    seller: uuid
+    item: DIAMOND_SWORD
+    price: 1000
+    tax: 10
+    time: 2026-01-23 21:10:00

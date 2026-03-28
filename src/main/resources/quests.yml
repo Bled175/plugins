@@ -1,0 +1,76 @@
+# =========================================================
+# SMONEY QUEST SYSTEM
+# Compatible: Java + Bedrock (Geyser)
+# Author system: SMoney Plugin
+# =========================================================
+#
+# 🧠 CARA TAMBAH QUEST (PENTING):
+#
+# 1. Copy format quest di bawah
+# 2. Gunakan ID unik (tanpa spasi, lowercase)
+#    contoh: kill_spider, mine_gold
+# 3. WAJIB isi:
+#    - display-name
+#    - type (DAILY / WEEKLY / GLOBAL)
+#    - target (angka)
+#    - reward (money)
+#    - icon (material minecraft)
+#
+# ❌ JANGAN:
+# - pakai spasi di ID
+# - pakai simbol aneh
+# - hapus struktur quests:
+#
+# =========================================================
+
+quests:
+
+  # -------------------------
+  # DAILY QUEST EXAMPLE
+  # -------------------------
+  kill_zombie:
+    display-name: "Kill Zombie"
+    type: DAILY
+    target: 10
+    reward: 500
+    icon: ZOMBIE_HEAD
+
+  # -------------------------
+  # DAILY QUEST EXAMPLE 2
+  # -------------------------
+  mine_diamond:
+    display-name: "Mine Diamond"
+    type: DAILY
+    target: 5
+    reward: 1000
+    icon: DIAMOND
+
+  # -------------------------
+  # WEEKLY QUEST EXAMPLE
+  # -------------------------
+  kill_skeleton:
+    display-name: "Kill Skeleton"
+    type: WEEKLY
+    target: 15
+    reward: 1500
+    icon: BOW
+
+  # -------------------------
+  # WEEKLY QUEST EXAMPLE 2
+  # -------------------------
+  fishing:
+    display-name: "Fishing Time"
+    type: WEEKLY
+    target: 10
+    reward: 1200
+    icon: FISHING_ROD
+
+  # -------------------------
+  # GLOBAL EVENT QUEST
+  # -------------------------
+  global_dragon:
+    display-name: "Kill Ender Dragon"
+    type: GLOBAL
+    target: 1
+    reward: 5000
+    icon: DRAGON_HEAD

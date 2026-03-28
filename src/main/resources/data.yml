@@ -1,0 +1,21 @@
+players:
+
+  UUID:
+    quests:
+
+      daily:
+        active:
+          - kill_zombie
+          - mine_diamond
+          - break_log
+
+      weekly:
+        active:
+          - kill_skeleton
+          - fishing
+
+    progress:
+      kill_zombie: 5
+
+    claimed:
+      kill_zombie: true
