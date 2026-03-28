@@ -19,13 +19,18 @@ public class QuestGUI {
 
     public void open(Player player) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§8Quest");
+    // 🔥 FORCE ASSIGN (INI KUNCI)
+    manager.assignDaily(player);
+    manager.assignWeekly(player);
+
+    Inventory inv = Bukkit.createInventory(null, 27, "§8Quest");
 
         int slot = 10;
 
         for (String id : manager.getDaily(player)) {
 
             Quest q = manager.getQuest(id);
+            if (q == null) continue;
             int progress = manager.getProgress(player, id);
 
             ItemStack item = new ItemStack(Material.PAPER);

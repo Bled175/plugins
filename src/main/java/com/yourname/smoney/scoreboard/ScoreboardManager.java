@@ -5,6 +5,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
+/**
+ * Manages player scoreboards showing money and stats
+ */
 public class ScoreboardManager {
 
     private final EconomyManager economy;
@@ -20,19 +23,28 @@ public class ScoreboardManager {
 
         Scoreboard board = manager.getNewScoreboard();
 
-        Objective obj = board.registerNewObjective("smoney", "dummy", "§cSMoney");
+        Objective obj = board.registerNewObjective("smoney", "dummy", "§6SMoney");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        // 🍒 Ceri
+        // 💰 Money
         int money = (int) economy.getMoney(player.getUniqueId());
-        Score moneyScore = obj.getScore("§c Cery: §f" + money);
-        moneyScore.setScore(2);
+        Score moneyScore = obj.getScore("§fMoney: §a" + money);
+        moneyScore.setScore(3);
 
         // ☠ Deaths
         int deaths = player.getStatistic(org.bukkit.Statistic.DEATHS);
-        Score deathScore = obj.getScore("§7☠ Deaths: §f" + deaths);
-        deathScore.setScore(1);
+        Score deathScore = obj.getScore("§fDeaths: §c" + deaths);
+        deathScore.setScore(2);
+        
+        // Player name
+        Score nameScore = obj.getScore("§7Player: §f" + player.getName());
+        nameScore.setScore(1);
 
         player.setScoreboard(board);
+    }
+    
+    // Update scoreboard when money changes
+    public void updateMoney(Player player) {
+        setScoreboard(player);
     }
 }

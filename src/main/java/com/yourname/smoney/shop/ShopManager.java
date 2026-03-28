@@ -53,43 +53,49 @@ public class ShopManager {
     // =====================
     // BUY SYSTEM (CORE)
     // =====================
-    public boolean buy(Player player, String id) {
+   public boolean buy(Player player, String id) {
 
-        UUID uuid = player.getUniqueId();
-        ShopItem item = items.get(id);
+    UUID uuid = player.getUniqueId();
+    ShopItem item = items.get(id);
 
-        if (item == null) {
-            player.sendMessage("§cItem tidak ditemukan!");
-            return false;
-        }
+    if (item == null) {
+        player.sendMessage("§cItem tidak ditemukan!");
+        return false;
+    }
 
-        // cek stock
-        if (!item.isInfinite() && item.isOutOfStock()) {
-            player.sendMessage("§cStok habis!");
-            return false;
-        }
+    // cek stock
+    if (!item.isInfinite() && item.isOutOfStock()) {
+        player.sendMessage("§cStok habis!");
+        return false;
+    }
 
-        double price = item.getPrice();
+    double price = item.getPrice();
 
-        // cek uang dari SMoney
-        if (economy.getMoney(uuid) < price) {
-            player.sendMessage("§cUang kamu tidak cukup!");
-            return false;
-        }
+    // cek uang
+    if (economy.getMoney(uuid) < price) {
+        player.sendMessage("§cUang kamu tidak cukup!");
+        return false;
+    }
 
-        // potong uang
-        economy.removeMoney(uuid, price);
+    // potong uang
+    economy.removeMoney(uuid, price);
 
-        // kasih item
-        player.getInventory().addItem(item.getItem().clone());
+    // kasih item
+    player.getInventory().addItem(item.getItem().clone());
 
-        // kurangi stock
+    // kurangi stock
+    if (!item.isInfinite()) {
         item.reduceStock();
 
-        player.sendMessage("§aKamu membeli item seharga §e" + price);
-
-        return true;
+        // 🔥 SAVE STOCK
+        data.getConfig().set("shop." + id + ".stock", item.getStock());
+        data.save();
     }
+
+    player.sendMessage("§aKamu membeli item seharga §e" + price);
+
+    return true;
+}
 
     // =====================
     // GETTERS

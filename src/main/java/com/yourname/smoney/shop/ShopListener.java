@@ -1,58 +1,43 @@
 package com.yourname.smoney.shop;
 
-import com.yourname.smoney.economy.CurrencyUtil;
-import com.yourname.smoney.economy.EconomyManager;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ShopListener implements Listener {
 
     private final ShopManager shopManager;
-    private final EconomyManager economy;
 
-    public ShopListener(ShopManager shopManager, EconomyManager economy) {
+    public ShopListener(ShopManager shopManager) {
         this.shopManager = shopManager;
-        this.economy = economy;
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        if (e.getView().getTitle().equals("§8Shop")) {
-            e.setCancelled(true);
+        if (!e.getView().getTitle().equals("§8Shop")) return;
 
-            if (e.getCurrentItem() == null) return;
+        e.setCancelled(true);
 
-            Player player = (Player) e.getWhoClicked();
-            ItemStack clicked = e.getCurrentItem();
+        if (e.getCurrentItem() == null) return;
 
-            for (ShopItem shopItem : shopManager.getItems().values()) {
-                ItemStack stack = shopItem.getItem();
+        Player player = (Player) e.getWhoClicked();
+        ItemStack clicked = e.getCurrentItem();
 
-                if (clicked.getType() == stack.getType()) {
+        // 🔥 PAKAI ID SYSTEM (WAJIB)
+        for (String id : shopManager.getItems().keySet()) {
 
-                    double money = economy.getMoney(player.getUniqueId());
+            ShopItem shopItem = shopManager.getItem(id);
+            ItemStack stack = shopItem.getItem();
 
-                    if (money < shopItem.getPrice()) {
-                        player.sendMessage("§cUang tidak cukup!");
-                        return;
-                    }
+            // compare item type (basic)
+            if (clicked.getType() == stack.getType()) {
 
-                    economy.removeMoney(player.getUniqueId(), shopItem.getPrice());
-
-                    player.getInventory().addItem(stack.clone());
-
-                    String name = (stack.hasItemMeta() && stack.getItemMeta().hasDisplayName())
-                            ? stack.getItemMeta().getDisplayName()
-                            : stack.getType().toString();
-
-                    player.sendMessage("§aBerhasil membeli §e" + name);
-                    player.sendMessage("§7Sisa saldo: " + CurrencyUtil.format(economy.getMoney(player.getUniqueId())));
-
-                    return;
-                }
+                // 🔥 SEMUA LOGIC DI SINI
+                shopManager.buy(player, id);
+                return;
             }
         }
     }

@@ -19,6 +19,16 @@ commands:
     usage: /quest
     permission: smoney.quest
 
+  market:
+    description: Open market or sell item
+    usage: /market
+    permission: smoney.market
+
+  sell:
+    description: Sell item in hand
+    usage: /sell <price>
+    permission: smoney.market
+
 permissions:
   smoney.money:
     default: true
@@ -27,4 +37,7 @@ permissions:
     default: true
 
   smoney.quest:
+    default: true
+
+  smoney.market:
     default: true

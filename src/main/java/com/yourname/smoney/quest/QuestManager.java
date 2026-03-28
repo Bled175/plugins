@@ -4,6 +4,7 @@ import com.yourname.smoney.data.DataManager;
 import com.yourname.smoney.economy.CurrencyUtil;
 import com.yourname.smoney.economy.EconomyManager;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
@@ -13,30 +14,42 @@ public class QuestManager {
 
     private final DataManager data;
     private final EconomyManager economy;
+    private final JavaPlugin plugin;
 
-    public QuestManager(DataManager data, EconomyManager economy) {
+    public QuestManager(JavaPlugin plugin, DataManager data, EconomyManager economy) {
+        this.plugin = plugin;
         this.data = data;
         this.economy = economy;
+        
+        // 🎯 Load all quests from quests.yml
+        loadQuests();
+        
+        // ⏰ Start reset timers
+        scheduleResets();
     }
 
     // ================= LOAD QUEST =================
-    public void loadQuests() {
-        if (data.getQuestConfig().getConfigurationSection("quests") == null) return;
+public void loadQuests() {
 
-        for (String id : data.getQuestConfig().getConfigurationSection("quests").getKeys(false)) {
+    loadSection("daily", QuestType.DAILY);
+    loadSection("weekly", QuestType.WEEKLY);
+    loadSection("global", QuestType.GLOBAL);
+}
 
-            String path = "quests." + id;
+private void loadSection(String section, QuestType type) {
 
-            QuestType type = QuestType.valueOf(
-                    data.getQuestConfig().getString(path + ".type")
-            );
+    if (data.getQuestConfig().getConfigurationSection(section) == null) return;
 
-            int target = data.getQuestConfig().getInt(path + ".target");
-            double reward = data.getQuestConfig().getDouble(path + ".reward");
+    for (String id : data.getQuestConfig().getConfigurationSection(section).getKeys(false)) {
 
-            quests.put(id, new Quest(id, type, target, reward));
-        }
+        String path = section + "." + id;
+
+        int amount = data.getQuestConfig().getInt(path + ".amount");
+        double reward = data.getQuestConfig().getDouble(path + ".reward");
+
+        quests.put(id, new Quest(id, type, amount, reward));
     }
+}
 
     public Quest getQuest(String id) {
         return quests.get(id);
@@ -161,6 +174,17 @@ public class QuestManager {
     }
 
     // ================= RESET =================
+    // ⏰ Schedule automatic resets every 24h (daily) and 7d (weekly)
+    private void scheduleResets() {
+        // Daily reset every 24 hours (20 ticks/second * 60 * 60 * 24)
+        plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(
+                plugin, this::resetDaily, 86400 * 20L, 86400 * 20L);
+
+        // Weekly reset every 7 days
+        plugin.getServer().getScheduler().scheduleAsyncRepeatingTask(
+                plugin, this::resetWeekly, 604800 * 20L, 604800 * 20L);
+    }
+    
     public void resetDaily() {
         if (data.getConfig().getConfigurationSection("players") == null) return;
 

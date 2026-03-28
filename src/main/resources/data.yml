@@ -1,21 +1,20 @@
-players:
-
-  UUID:
-    quests:
-
-      daily:
-        active:
-          - kill_zombie
-          - mine_diamond
-          - break_log
-
-      weekly:
-        active:
-          - kill_skeleton
-          - fishing
-
-    progress:
-      kill_zombie: 5
-
-    claimed:
-      kill_zombie: true
+shop:
+  diamond_sword:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      DataVersion: 4671
+      id: minecraft:diamond_sword
+      count: 1
+      schema_version: 1
+    price: 500
+    stock: -1
+  
+  apple:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      DataVersion: 4671
+      id: minecraft:apple
+      count: 5
+      schema_version: 1
+    price: 50
+    stock: 100
