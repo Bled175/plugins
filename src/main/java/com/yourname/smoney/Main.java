@@ -13,6 +13,7 @@ import com.yourname.smoney.listeners.PlayerJoinListener;
 import com.yourname.smoney.listeners.QuestListener;
 import com.yourname.smoney.listeners.QuestProgressListener;
 import com.yourname.smoney.market.MarketManager;
+import com.yourname.smoney.quest.QuestGUIListener;
 import com.yourname.smoney.quest.QuestManager;
 import com.yourname.smoney.scoreboard.ScoreboardManager;
 import com.yourname.smoney.shop.ShopListener;
@@ -49,13 +50,12 @@ public class Main extends JavaPlugin {
 
         shopManager = new ShopManager(dataManager, economyManager);
 
-        // 🔥 FIX DI SINI (tambah this)
-        questManager = new QuestManager(this, dataManager, economyManager);
+        scoreboardManager = new ScoreboardManager(economyManager);
+
+        questManager = new QuestManager(this, dataManager, economyManager, scoreboardManager);
         questManager.loadQuests();
 
         marketManager = new MarketManager(economyManager, this, transactionLogger);
-
-        scoreboardManager = new ScoreboardManager(economyManager);
 
         // =====================
         // 🧾 COMMAND REGISTER
@@ -68,6 +68,7 @@ public class Main extends JavaPlugin {
         // =====================
         // 🎧 LISTENER REGISTER
         // =====================
+        // PlayerJoinListener cuma butuh QuestManager
         Bukkit.getPluginManager().registerEvents(
                 new PlayerJoinListener(economyManager, questManager, scoreboardManager), this);
 
@@ -76,6 +77,9 @@ public class Main extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(
                 new QuestListener(questManager), this);
+
+        Bukkit.getPluginManager().registerEvents(
+                new QuestGUIListener(questManager), this);
 
         Bukkit.getPluginManager().registerEvents(
                 new MarketListener(marketManager), this);

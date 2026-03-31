@@ -41,10 +41,16 @@ public class ScoreboardManager {
         nameScore.setScore(1);
 
         player.setScoreboard(board);
+
     }
     
     // Update scoreboard when money changes
     public void updateMoney(Player player) {
+        setScoreboard(player);
+    }
+
+    // 🔥 TAMBAH INI
+    public void update(Player player) {
         setScoreboard(player);
     }
 }

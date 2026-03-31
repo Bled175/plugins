@@ -4,12 +4,14 @@ public class Quest {
 
     private final String id;
     private final QuestType type;
+    private final String targetType; // 🔥 WAJIB ADA
     private final int target;
     private final double reward;
 
-    public Quest(String id, QuestType type, int target, double reward) {
+    public Quest(String id, QuestType type, String targetType, int target, double reward) {
         this.id = id;
         this.type = type;
+        this.targetType = targetType != null ? targetType.toUpperCase() : "NONE";
         this.target = target;
         this.reward = reward;
     }
@@ -20,6 +22,10 @@ public class Quest {
 
     public QuestType getType() {
         return type;
+    }
+
+    public String getTargetType() { // 🔥 WAJIB ADA
+        return targetType;
     }
 
     public int getTarget() {

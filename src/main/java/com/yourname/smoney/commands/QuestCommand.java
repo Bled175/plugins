@@ -18,9 +18,13 @@ public class QuestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
+        System.out.println("COMMAND QUEST KE TRIGGER");
+
         if (!(sender instanceof Player)) return true;
 
         Player player = (Player) sender;
+
+        System.out.println("BUKA GUI");
 
         new QuestGUI(questManager).open(player);
 
