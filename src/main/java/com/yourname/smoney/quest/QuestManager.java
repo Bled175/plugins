@@ -3,9 +3,9 @@ package com.yourname.smoney.quest;
 import com.yourname.smoney.data.DataManager;
 import com.yourname.smoney.economy.CurrencyUtil;
 import com.yourname.smoney.economy.EconomyManager;
+import com.yourname.smoney.scoreboard.ScoreboardManager;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import com.yourname.smoney.scoreboard.ScoreboardManager;
 
 import java.util.*;
 
@@ -27,25 +27,27 @@ public class QuestManager {
         loadQuests();
         scheduleResets();
     }
+
     public Collection<Quest> getAllQuests() {
         return quests.values();
     }
+
     // ================= LOAD QUEST =================
     public void loadQuests() {
 
-        quests.clear(); // 🔥 penting biar gak numpuk
+        quests.clear();
 
         loadSection("daily", QuestType.DAILY);
         loadSection("weekly", QuestType.WEEKLY);
         loadSection("global", QuestType.GLOBAL);
 
-        System.out.println("TOTAL QUEST LOADED: " + quests.size());
+        plugin.getLogger().info("TOTAL QUEST LOADED: " + quests.size());
     }
 
     private void loadSection(String section, QuestType type) {
 
         if (data.getQuestConfig().getConfigurationSection(section) == null) {
-            System.out.println("❌ SECTION NULL: " + section);
+            plugin.getLogger().warning("SECTION NULL: " + section);
             return;
         }
 
@@ -59,23 +61,20 @@ public class QuestManager {
 
             quests.put(id, new Quest(id, type, targetType, amount, reward));
 
-            System.out.println("LOAD QUEST: " + id);
-
+            plugin.getLogger().info("LOAD QUEST: " + id);
         }
-}
+    }
 
     public Quest getQuest(String id) {
         return quests.get(id);
     }
 
-    // ================= ASSIGN DAILY (3-5 QUEST) =================
+    // ================= ASSIGN DAILY =================
     public void assignDaily(Player player) {
         UUID uuid = player.getUniqueId();
         String path = "players." + uuid + ".daily";
 
         List<String> current = data.getConfig().getStringList(path);
-
-        // ✅ FIX: cek kosong, bukan cuma contains
         if (current != null && !current.isEmpty()) return;
 
         List<Quest> list = new ArrayList<>();
@@ -86,21 +85,20 @@ public class QuestManager {
             }
         }
 
-        // 🔥 DEBUG
-        System.out.println("AVAILABLE DAILY QUEST: " + list.size());
-
         if (list.isEmpty()) {
-            System.out.println("❌ NO DAILY QUEST LOADED!");
+            plugin.getLogger().warning("NO DAILY QUEST LOADED!");
             return;
         }
 
         Collections.shuffle(list);
 
+        int min = Math.min(3, list.size());
+        int max = Math.min(5, list.size());
+        int count = new Random().nextInt(max - min + 1) + min;
+
         List<String> selected = new ArrayList<>();
 
-        int max = Math.min(5, list.size());
-
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i < count; i++) {
             selected.add(list.get(i).getId());
         }
 
@@ -114,7 +112,6 @@ public class QuestManager {
         String path = "players." + uuid + ".weekly";
 
         List<String> current = data.getConfig().getStringList(path);
-
         if (current != null && !current.isEmpty()) return;
 
         List<Quest> list = new ArrayList<>();
@@ -126,7 +123,7 @@ public class QuestManager {
         }
 
         if (list.isEmpty()) {
-            System.out.println("❌ NO WEEKLY QUEST LOADED!");
+            plugin.getLogger().warning("NO WEEKLY QUEST LOADED!");
             return;
         }
 
@@ -142,7 +139,7 @@ public class QuestManager {
         data.save();
     }
 
-    // ================= GET QUEST LIST =================
+    // ================= GET QUEST =================
     public List<String> getDaily(Player player) {
         return data.getConfig().getStringList("players." + player.getUniqueId() + ".daily");
     }
@@ -161,10 +158,8 @@ public class QuestManager {
 
         int current = data.getConfig().getInt(path, 0);
 
-        // 🔥 STOP kalau sudah selesai (biar gak lebih dari target & gak spam)
         if (current >= quest.getTarget()) return;
 
-        // 🔥 LIMIT PROGRESS (gak bisa lebih dari target)
         int updated = Math.min(current + amount, quest.getTarget());
 
         data.getConfig().set(path, updated);
@@ -172,6 +167,7 @@ public class QuestManager {
 
         player.sendMessage("§eProgress " + questId + ": " + updated + "/" + quest.getTarget());
     }
+
     public int getProgress(Player player, String questId) {
         return data.getConfig().getInt(
                 "players." + player.getUniqueId() + ".progress." + questId,
@@ -192,44 +188,74 @@ public class QuestManager {
 
         int progress = data.getConfig().getInt(progressPath, 0);
 
-        // ❌ BELUM SELESAI
         if (progress < quest.getTarget()) {
             player.sendMessage("§cQuest belum selesai!");
             return;
         }
 
-        // ❌ SUDAH CLAIM
         if (data.getConfig().getBoolean(claimedPath)) {
             player.sendMessage("§cReward sudah diambil!");
             return;
         }
 
-        // 💰 TAMBAH UANG
         economy.addMoney(player.getUniqueId(), quest.getReward());
 
-        // ✅ SET CLAIMED
         data.getConfig().set(claimedPath, true);
         data.save();
 
-        // 🔥 UPDATE SCOREBOARD (INI YANG BENER)
         scoreboard.updateMoney(player);
 
         player.sendMessage("§aReward di-claim! +" + CurrencyUtil.format(quest.getReward()));
     }
 
-    // ================= RESET =================
-    // ⏰ Schedule automatic resets every 24h (daily) and 7d (weekly)
+    // ================= RESET SYSTEM =================
     private void scheduleResets() {
-        plugin.getServer().getScheduler().runTaskTimer(
-                plugin, this::resetDaily, 86400 * 20L, 86400 * 20L
-        );
 
-        plugin.getServer().getScheduler().runTaskTimer(
-                plugin, this::resetWeekly, 604800 * 20L, 604800 * 20L
-        );
+        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
+
+            Calendar now = Calendar.getInstance();
+
+            int hour = now.get(Calendar.HOUR_OF_DAY);
+            int minute = now.get(Calendar.MINUTE);
+            int day = now.get(Calendar.DAY_OF_WEEK);
+
+            if (hour == 3 && minute == 0) {
+
+                long lastDaily = data.getConfig().getLong("lastReset.daily", 0);
+                long lastWeekly = data.getConfig().getLong("lastReset.weekly", 0);
+
+                long today = getTodayTimestamp();
+
+                // DAILY
+                if (lastDaily < today) {
+                    resetDaily();
+                    plugin.getLogger().info("Daily quest reset!");
+                }
+
+                // WEEKLY (Senin)
+                if (day == Calendar.MONDAY && lastWeekly < today) {
+                    resetWeekly();
+                    plugin.getLogger().info("Weekly quest reset!");
+                }
+            }
+
+        }, 0L, 1200L); // cek tiap 1 menit
     }
-    
+
+    private long getTodayTimestamp() {
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal.getTimeInMillis();
+    }
+
     public void resetDaily() {
+
         if (data.getConfig().getConfigurationSection("players") == null) return;
 
         for (String uuid : data.getConfig().getConfigurationSection("players").getKeys(false)) {
@@ -240,25 +266,25 @@ public class QuestManager {
 
         data.getConfig().set("lastReset.daily", System.currentTimeMillis());
         data.save();
+
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            assignDaily(player);
+        }
     }
 
     public void resetWeekly() {
-        data.getConfig().set("lastReset.weekly", System.currentTimeMillis());
-        data.save();
-    }
 
-    public void checkReset() {
-        long now = System.currentTimeMillis();
+        if (data.getConfig().getConfigurationSection("players") == null) return;
 
-        long lastDaily = data.getConfig().getLong("lastReset.daily", 0);
-        long lastWeekly = data.getConfig().getLong("lastReset.weekly", 0);
-
-        if (now - lastDaily >= 86400000) {
-            resetDaily();
+        for (String uuid : data.getConfig().getConfigurationSection("players").getKeys(false)) {
+            data.getConfig().set("players." + uuid + ".weekly", null);
         }
 
-        if (now - lastWeekly >= 604800000) {
-            resetWeekly();
+        data.getConfig().set("lastReset.weekly", System.currentTimeMillis());
+        data.save();
+
+        for (Player player : plugin.getServer().getOnlinePlayers()) {
+            assignWeekly(player);
         }
     }
 }

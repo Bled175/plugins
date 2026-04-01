@@ -41,3 +41,6 @@ permissions:
 
   smoney.market:
     default: true
+
+  smoney.admin:
+    default: op

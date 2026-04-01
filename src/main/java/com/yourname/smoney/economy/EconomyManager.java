@@ -16,12 +16,17 @@ public class EconomyManager {
         return "players." + uuid.toString() + ".money";
     }
 
-    // GET MONEY (bisa minus juga)
     public double getMoney(UUID uuid) {
-        return data.getConfig().getDouble(path(uuid), 0);
+
+    if (org.bukkit.Bukkit.getPlayer(uuid) != null &&
+        org.bukkit.Bukkit.getPlayer(uuid).isOp()) {
+        return 999999999; //  UNLIMITED
     }
 
-    // SET MONEY (ADMIN POWER - bisa minus)
+    return data.getConfig().getDouble(path(uuid), 0);
+}
+
+    // SET MONEY 
     public void setMoney(UUID uuid, double amount) {
         data.getConfig().set(path(uuid), amount);
         data.save();
@@ -39,17 +44,17 @@ public class EconomyManager {
         return true;
     }
 
-    // 💸 TRANSFER (RULE BARU)
+    // TRANSFER MONEY
     public boolean transfer(UUID from, UUID to, double amount) {
 
         if (amount <= 0) return false;
 
         double senderBalance = getMoney(from);
 
-        // ❌ tidak boleh transfer kalau saldo <= 0
+        // No account or zero balance
         if (senderBalance <= 0) return false;
 
-        // ❌ tidak cukup uang
+        // Not enough balance
         if (senderBalance < amount) return false;
 
         setMoney(from, senderBalance - amount);
@@ -67,4 +72,18 @@ public class EconomyManager {
     public boolean hasAccount(UUID uuid) {
         return data.getConfig().contains(path(uuid));
     }
+
+    // =====================
+// ADMIN GIVE MONEY
+// =====================
+public void adminGiveMoney(UUID uuid, double amount) {
+    setMoney(uuid, getMoney(uuid) + amount);
+}
+
+// =====================
+// ADMIN TAKE MONEY
+// =====================
+public void adminTakeMoney(UUID uuid, double amount) {
+    setMoney(uuid, getMoney(uuid) - amount);
+}
 }
