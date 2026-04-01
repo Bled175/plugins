@@ -5,17 +5,23 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
-/**
- * Manages player scoreboards showing money and stats
- */
+import java.util.HashMap;
+import java.util.Map;
+
 public class ScoreboardManager {
 
     private final EconomyManager economy;
+
+    // 🔥 SIMPAN BOARD PER PLAYER
+    private final Map<Player, Scoreboard> boards = new HashMap<>();
 
     public ScoreboardManager(EconomyManager economy) {
         this.economy = economy;
     }
 
+    // =====================
+    // CREATE SCOREBOARD (1x saja)
+    // =====================
     public void setScoreboard(Player player) {
 
         org.bukkit.scoreboard.ScoreboardManager manager = Bukkit.getScoreboardManager();
@@ -26,30 +32,57 @@ public class ScoreboardManager {
         Objective obj = board.registerNewObjective("smoney", "dummy", "§6SMoney");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        // 💰 Money
-        int money = (int) economy.getMoney(player.getUniqueId());
-        Score moneyScore = obj.getScore("§fMoney: §a" + money);
-        moneyScore.setScore(3);
+        // dummy line biar urutan aman
+        obj.getScore("§7").setScore(4);
 
-        // ☠ Deaths
+        // money
+        obj.getScore(getMoneyLine(player)).setScore(3);
+
+        // deaths
         int deaths = player.getStatistic(org.bukkit.Statistic.DEATHS);
-        Score deathScore = obj.getScore("§fDeaths: §c" + deaths);
-        deathScore.setScore(2);
-        
-        // Player name
-        Score nameScore = obj.getScore("§7Player: §f" + player.getName());
-        nameScore.setScore(1);
+        obj.getScore("§fDeaths: §c" + deaths).setScore(2);
+
+        // name
+        obj.getScore("§7Player: §f" + player.getName()).setScore(1);
 
         player.setScoreboard(board);
 
-    }
-    
-    // Update scoreboard when money changes
-    public void updateMoney(Player player) {
-        setScoreboard(player);
+        boards.put(player, board);
     }
 
-    // 🔥 TAMBAH INI
+    // =====================
+    // UPDATE MONEY (NO RESET)
+    // =====================
+    public void updateMoney(Player player) {
+
+        Scoreboard board = boards.get(player);
+        if (board == null) {
+            setScoreboard(player);
+            return;
+        }
+
+        Objective obj = board.getObjective("smoney");
+        if (obj == null) return;
+
+        // 🔥 HAPUS LINE LAMA
+        board.getEntries().forEach(entry -> {
+            if (entry.contains("Money")) {
+                board.resetScores(entry);
+            }
+        });
+
+        // 🔥 TAMBAH LINE BARU
+        obj.getScore(getMoneyLine(player)).setScore(3);
+    }
+
+    private String getMoneyLine(Player player) {
+        int money = (int) economy.getMoney(player.getUniqueId());
+        return "§fMoney: §a" + money;
+    }
+
+    // =====================
+    // FULL UPDATE (OPTIONAL)
+    // =====================
     public void update(Player player) {
         setScoreboard(player);
     }

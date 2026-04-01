@@ -52,6 +52,9 @@ public class Main extends JavaPlugin {
 
         scoreboardManager = new ScoreboardManager(economyManager);
 
+        // 🔥 CONNECT ECONOMY ↔ SCOREBOARD
+        economyManager.setScoreboard(scoreboardManager);
+
         questManager = new QuestManager(this, dataManager, economyManager, scoreboardManager);
         questManager.loadQuests();
 
@@ -68,7 +71,6 @@ public class Main extends JavaPlugin {
         // =====================
         // 🎧 LISTENER REGISTER
         // =====================
-        // PlayerJoinListener cuma butuh QuestManager
         Bukkit.getPluginManager().registerEvents(
                 new PlayerJoinListener(economyManager, questManager, scoreboardManager), this);
 
