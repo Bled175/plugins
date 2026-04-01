@@ -18,11 +18,14 @@ public class ShopGUI {
 
     public void open(Player player) {
 
-        Inventory inv = Bukkit.createInventory(null, 27, "§8Shop");
+        Inventory inv = Bukkit.createInventory(null, 54, "§8Shop Page 1");
 
-        int slot = 10;
+        int slot = 0;
 
-        for (ShopItem item : manager.getItems().values()) {
+        for (Map.Entry<String, ShopItem> entry : manager.getItems().entrySet()) {
+
+            String id = entry.getKey();
+            ShopItem item = entry.getValue();
 
             ItemStack stack = item.getItem().clone();
             ItemMeta meta = stack.getItemMeta();
@@ -30,10 +33,17 @@ public class ShopGUI {
             List<String> lore = new ArrayList<>();
             lore.add("§7Harga: " + CurrencyUtil.format(item.getPrice()));
 
-            if (item.getStock() == -1) {
+            if (item.isInfinite()) {
                 lore.add("§aStock: Infinite");
             } else {
                 lore.add("§cStock: " + item.getStock());
+            }
+
+            if (player.hasPermission("smoney.admin")) {
+                lore.add("§eKlik kanan = edit");
+                lore.add("§7Klik kiri = beli");
+            } else {
+                lore.add("§7Klik untuk beli");
             }
 
             meta.setLore(lore);

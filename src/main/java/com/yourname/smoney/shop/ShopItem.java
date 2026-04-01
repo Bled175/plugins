@@ -5,8 +5,8 @@ import org.bukkit.inventory.ItemStack;
 public class ShopItem {
 
     private final ItemStack item;
-    private final double price;
-    private int stock; // -1 = infinite
+    private double price;
+    private int stock;
 
     public ShopItem(ItemStack item, double price, int stock) {
         this.item = item;
@@ -24,6 +24,14 @@ public class ShopItem {
 
     public int getStock() {
         return stock;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     public void reduceStock() {

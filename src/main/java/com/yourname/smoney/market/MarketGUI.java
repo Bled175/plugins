@@ -14,7 +14,6 @@ public class MarketGUI implements Listener {
 
     private final MarketManager manager;
 
-    // page data
     private final Map<UUID, Integer> pageMap = new HashMap<>();
     private final Map<UUID, Map<Integer, String>> slotMap = new HashMap<>();
 
@@ -22,9 +21,6 @@ public class MarketGUI implements Listener {
         this.manager = manager;
     }
 
-    // =====================
-    // OPEN GUI (PAGE)
-    // =====================
     public void open(Player player) {
         open(player, 0);
     }
@@ -34,8 +30,9 @@ public class MarketGUI implements Listener {
         Inventory inv = Bukkit.createInventory(null, 54, "§6Market Page " + (page + 1));
 
         List<MarketItem> items = new ArrayList<>(manager.getItems().values());
+        items.sort(Comparator.comparing(MarketItem::getId));
 
-        int start = page * 45; // 45 slot item (sisanya tombol)
+        int start = page * 45;
         int end = Math.min(start + 45, items.size());
 
         Map<Integer, String> map = new HashMap<>();
@@ -53,8 +50,10 @@ public class MarketGUI implements Listener {
 
             List<String> lore = new ArrayList<>();
             lore.add("§7Klik untuk beli");
-            meta.setLore(lore);
+            lore.add("§7Penjual: §f" + Bukkit.getOfflinePlayer(item.getSeller()).getName());
+            lore.add("§8ID: " + item.getId());
 
+            meta.setLore(lore);
             stack.setItemMeta(meta);
 
             inv.setItem(slot, stack);
@@ -63,7 +62,6 @@ public class MarketGUI implements Listener {
             slot++;
         }
 
-        // NAV BUTTON
         if (end < items.size()) {
             inv.setItem(53, createNav("§aNext Page"));
         }
@@ -78,23 +76,23 @@ public class MarketGUI implements Listener {
         player.openInventory(inv);
     }
 
-    // =====================
-    // CLICK EVENT
-    // =====================
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
         if (!e.getView().getTitle().contains("§6Market Page")) return;
 
+        // ❗ FIX PALING PENTING
+        if (e.getClickedInventory() == null) return;
+        if (!e.getClickedInventory().equals(e.getView().getTopInventory())) return;
+
         e.setCancelled(true);
 
         Player player = (Player) e.getWhoClicked();
-
-        int slot = e.getRawSlot();
+        int slot = e.getSlot(); // 🔥 jangan rawSlot
 
         int page = pageMap.getOrDefault(player.getUniqueId(), 0);
 
-        // NAVIGATION
+        // NAV
         if (slot == 53) {
             open(player, page + 1);
             return;
@@ -106,19 +104,18 @@ public class MarketGUI implements Listener {
         }
 
         Map<Integer, String> map = slotMap.get(player.getUniqueId());
-
         if (map == null) return;
 
         String id = map.get(slot);
-
         if (id == null) return;
 
-        manager.buy(player, id);
+        boolean success = manager.buy(player, id);
+
+        if (success) {
+            Bukkit.getScheduler().runTaskLater(manager.getPlugin(), () -> open(player, page), 1L);
+        }
     }
 
-    // =====================
-    // CLEANUP
-    // =====================
     @EventHandler
     public void onClose(InventoryCloseEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
@@ -126,9 +123,6 @@ public class MarketGUI implements Listener {
         pageMap.remove(uuid);
     }
 
-    // =====================
-    // NAV ITEM
-    // =====================
     private ItemStack createNav(String name) {
         ItemStack item = new ItemStack(org.bukkit.Material.ARROW);
         ItemMeta meta = item.getItemMeta();

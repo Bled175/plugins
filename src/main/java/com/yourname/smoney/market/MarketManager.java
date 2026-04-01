@@ -7,56 +7,64 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class MarketManager {
 
-    private final Map<String, MarketItem> items = new HashMap<>();
+    private final Map<String, MarketItem> items = new LinkedHashMap<>();
+    private final Set<String> transactionsInProgress = new HashSet<>();
+
     private final EconomyManager economy;
     private final JavaPlugin plugin;
     private final FileConfiguration config;
     private final TransactionLogger logger;
-    
-    // 🛡️ Anti-dupe: track ongoing transactions
-    private final Set<String> transactionsInProgress = new HashSet<>();
 
     private final double TAX_PERCENT = 0.01;
 
-    // ✅ CONSTRUCTOR FINAL (SATU SAJA)
     public MarketManager(EconomyManager economy, JavaPlugin plugin, TransactionLogger logger) {
         this.economy = economy;
         this.plugin = plugin;
         this.logger = logger;
-
         this.config = plugin.getConfig();
 
         loadItems();
     }
 
     // =====================
-    // ADD ITEM
+    // SELL
     // =====================
-    public void addItem(MarketItem item) {
+    public void sellItem(Player seller, ItemStack item, double price) {
 
-        items.put(item.getId(), item);
+        if (item == null || item.getType().isAir()) {
+            seller.sendMessage("§cItem tidak valid!");
+            return;
+        }
 
-        config.set("items." + item.getId() + ".seller", item.getSeller().toString());
-        config.set("items." + item.getId() + ".price", item.getPrice());
-        config.set("items." + item.getId() + ".item", item.getItem());
+        if (price <= 0) {
+            seller.sendMessage("§cHarga harus lebih dari 0!");
+            return;
+        }
 
-        plugin.saveConfig();
+        // 🔥 FIX: clean item
+        ItemStack clone = item.clone();
+        clone.setAmount(1);
+
+        String id = "market-" + UUID.randomUUID();
+
+        MarketItem marketItem = new MarketItem(id, seller.getUniqueId(), clone, price);
+
+        addItem(marketItem);
+
+        seller.sendMessage("§a✓ Item masuk market!");
+        seller.sendMessage("§7ID: §e" + id);
+        seller.sendMessage("§7Harga: §e" + price);
     }
 
     // =====================
-    // BUY SYSTEM
+    // BUY
     // =====================
     public boolean buy(Player buyer, String id) {
 
-        // 🛡️ Anti-dupe: prevent double-click buying
         if (transactionsInProgress.contains(id)) {
             buyer.sendMessage("§cTransaksi sedang diproses...");
             return false;
@@ -69,109 +77,99 @@ public class MarketManager {
             return false;
         }
 
-        // ✅ Lock transaction
+        if (item.getSeller().equals(buyer.getUniqueId())) {
+            buyer.sendMessage("§cTidak bisa beli item sendiri!");
+            return false;
+        }
+
         transactionsInProgress.add(id);
 
         try {
             double price = item.getPrice();
-            UUID buyerId = buyer.getUniqueId();
 
-            if (economy.getMoney(buyerId) < price) {
-                buyer.sendMessage("§cUang kamu tidak cukup!");
+            double money = economy.getMoney(buyer.getUniqueId());
+            if (money < price) {
+                buyer.sendMessage("§cUang tidak cukup!");
                 return false;
             }
 
-            // 🔍 Validate item exists and is similar to what we're selling
-            ItemStack itemToGive = item.getItem().clone();
-            if (itemToGive == null || itemToGive.getAmount() == 0) {
-                buyer.sendMessage("§cItem tidak valid!");
+            // 🔥 FIX: NO DOUBLE CLONE
+            ItemStack itemToGive = item.getItem();
+
+            if (itemToGive == null || itemToGive.getType().isAir()) {
+                buyer.sendMessage("§cItem corrupt!");
                 return false;
             }
 
             double tax = price * TAX_PERCENT;
             double sellerMoney = price - tax;
 
-            // 💸 transaksi
-            economy.removeMoney(buyerId, price);
+            economy.removeMoney(buyer.getUniqueId(), price);
             economy.addMoney(item.getSeller(), sellerMoney);
 
-            // 🧾 log transaksi
-            logger.log(buyerId, item.getSeller(), itemToGive, price, tax);
+            giveItemSafely(buyer, itemToGive.clone());
 
-            // 🎁 kasih item (dengan inventory safety)
-            giveItemSafely(buyer, itemToGive);
+            logger.log(buyer.getUniqueId(), item.getSeller(), itemToGive, price, tax);
 
-            // 🧹 hapus dari market
             items.remove(id);
             config.set("items." + id, null);
             plugin.saveConfig();
 
-            buyer.sendMessage("§aPembelian berhasil! §7Tax: §e" + tax);
-
+            buyer.sendMessage("§aPembelian berhasil!");
             return true;
 
         } finally {
-            // 🔓 Unlock transaction
             transactionsInProgress.remove(id);
-        }
-    }
-    
-    // =====================
-    // SELL ITEM (NEW)
-    // =====================
-    public void sellItem(Player seller, ItemStack item, double price) {
-        
-        if (item == null || item.getAmount() == 0) {
-            seller.sendMessage("§cItem tidak valid!");
-            return;
-        }
-        
-        // Generate unique ID for market item
-        String id = "market-" + UUID.randomUUID().toString();
-        
-        // Create MarketItem
-        MarketItem marketItem = new MarketItem(id, seller.getUniqueId(), item, price);
-        
-        // Add to market
-        addItem(marketItem);
-        
-        seller.sendMessage("§a✓ Item dijual ke market!");
-        seller.sendMessage("§7Harga: §e" + price);
-        seller.sendMessage("§7Tax: §c" + (price * TAX_PERCENT));
-    }
-    
-    // =====================
-    // BUY FROM GUI (NEW)
-    // =====================
-    public boolean buyFromGUI(Player buyer, int slot) {
-        
-        // Get the map of slots to item IDs from current inventory
-        // This is handled by MarketGUI, so we need the item ID
-        // For now, this will be called from listener
-        // The actual buying is done via the regular buy() method
-        // This is a wrapper to integrate with GUI interactions
-        
-        return false; // Implementation handled by MarketGUI directly
-    }
-    
-    // =====================
-    // INVENTORY SAFETY (NEW)
-    // =====================
-    private void giveItemSafely(Player player, ItemStack item) {
-        
-        // Check if inventory has space
-        if (player.getInventory().firstEmpty() != -1) {
-            // Inventory has space, add normally
-            player.getInventory().addItem(item);
-        } else {
-            // Inventory full, drop item on ground
-            player.getWorld().dropItem(player.getLocation(), item);
-            player.sendMessage("§7Inventory penuh! Item dijatuhkan di tanah.");
         }
     }
 
     // =====================
-    // LOAD DATA
+    // UNDO
+    // =====================
+    public boolean undo(Player player, String id) {
+
+        MarketItem item = items.get(id);
+
+        if (item == null) {
+            player.sendMessage("§cItem tidak ditemukan!");
+            return false;
+        }
+
+        if (!item.getSeller().equals(player.getUniqueId())) {
+            player.sendMessage("§cIni bukan item kamu!");
+            return false;
+        }
+
+        giveItemSafely(player, item.getItem().clone());
+
+        items.remove(id);
+        config.set("items." + id, null);
+        plugin.saveConfig();
+
+        player.sendMessage("§aItem berhasil diambil!");
+        return true;
+    }
+
+    // =====================
+    // ADD ITEM
+    // =====================
+    public void addItem(MarketItem item) {
+
+        items.put(item.getId(), item);
+
+        // 🔥 FIX: SAFE SAVE
+        ItemStack safeItem = item.getItem().clone();
+        safeItem.setAmount(1);
+
+        config.set("items." + item.getId() + ".seller", item.getSeller().toString());
+        config.set("items." + item.getId() + ".price", item.getPrice());
+        config.set("items." + item.getId() + ".item", safeItem);
+
+        plugin.saveConfig();
+    }
+
+    // =====================
+    // LOAD
     // =====================
     public void loadItems() {
 
@@ -186,21 +184,34 @@ public class MarketManager {
                 double price = config.getDouble(path + ".price");
                 ItemStack item = config.getItemStack(path + ".item");
 
-                if (item == null) continue;
+                if (item == null || item.getType().isAir()) continue;
 
-                MarketItem marketItem = new MarketItem(id, seller, item, price);
-                items.put(id, marketItem);
+                items.put(id, new MarketItem(id, seller, item, price));
 
             } catch (Exception e) {
-                plugin.getLogger().warning("Gagal load item market: " + id);
+                plugin.getLogger().warning("Gagal load item: " + id);
             }
         }
     }
 
     // =====================
-    // GETTER
+    // UTIL
     // =====================
+    private void giveItemSafely(Player player, ItemStack item) {
+
+        if (player.getInventory().firstEmpty() != -1) {
+            player.getInventory().addItem(item);
+        } else {
+            player.getWorld().dropItem(player.getLocation(), item);
+            player.sendMessage("§7Inventory penuh, item dijatuhkan.");
+        }
+    }
+
     public Map<String, MarketItem> getItems() {
         return items;
+    }
+
+    public JavaPlugin getPlugin() {
+        return plugin;
     }
 }

@@ -20,14 +20,10 @@ commands:
     permission: smoney.quest
 
   market:
-    description: Open market or sell item
-    usage: /market
+    description: Open market & trading system
+    usage: /market help
     permission: smoney.market
-
-  sell:
-    description: Sell item in hand
-    usage: /sell <price>
-    permission: smoney.market
+    aliases: [m, ah]
 
 permissions:
   smoney.money:

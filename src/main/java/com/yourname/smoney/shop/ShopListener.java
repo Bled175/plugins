@@ -4,41 +4,69 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ShopListener implements Listener {
 
-    private final ShopManager shopManager;
+    private final ShopManager manager;
 
-    public ShopListener(ShopManager shopManager) {
-        this.shopManager = shopManager;
+    public ShopListener(ShopManager manager) {
+        this.manager = manager;
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        if (!e.getView().getTitle().equals("§8Shop")) return;
+        String title = e.getView().getTitle();
 
-        e.setCancelled(true);
+        // =====================
+        // SHOP GUI
+        // =====================
+        if (title.contains("§8Shop Page")) {
 
-        if (e.getCurrentItem() == null) return;
+            e.setCancelled(true);
 
-        Player player = (Player) e.getWhoClicked();
-        ItemStack clicked = e.getCurrentItem();
+            if (!(e.getWhoClicked() instanceof Player)) return;
+            if (e.getCurrentItem() == null) return;
 
-        // 🔥 PAKAI ID SYSTEM (WAJIB)
-        for (String id : shopManager.getItems().keySet()) {
+            Player player = (Player) e.getWhoClicked();
 
-            ShopItem shopItem = shopManager.getItem(id);
-            ItemStack stack = shopItem.getItem();
+            for (String id : manager.getItems().keySet()) {
 
-            // compare item type (basic)
-            if (clicked.getType() == stack.getType()) {
+                ShopItem item = manager.getItem(id);
+                if (item == null) continue;
 
-                // 🔥 SEMUA LOGIC DI SINI
-                shopManager.buy(player, id);
-                return;
+                if (item.getItem().getType() == e.getCurrentItem().getType()) {
+
+                    if (player.hasPermission("smoney.admin") && e.isRightClick()) {
+                        new ShopAdminGUI(manager, id).open(player);
+                        return;
+                    }
+
+                    manager.buy(player, id);
+                    return;
+                }
             }
         }
+
+        // =====================
+        // ADMIN GUI
+        // =====================
+        if (title.contains("§cManage Item")) {
+
+            e.setCancelled(true);
+
+            Player player = (Player) e.getWhoClicked();
+
+            String id = manager.getLastOpenedItem(player);
+            if (id == null) return;
+
+            new ShopAdminGUI(manager, id).handleClick(player, e.getRawSlot());
+        }
+    }
+
+    @EventHandler
+    public void onChat(AsyncPlayerChatEvent e) {
+        manager.handleChat(e.getPlayer(), e.getMessage());
     }
 }
