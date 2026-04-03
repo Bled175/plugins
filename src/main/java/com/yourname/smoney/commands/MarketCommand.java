@@ -10,9 +10,14 @@ import org.bukkit.inventory.ItemStack;
 public class MarketCommand implements CommandExecutor {
 
     private final MarketManager marketManager;
+    private final MarketGUI marketGUI;
+    private final MarketMyGUI marketMyGUI;
 
-    public MarketCommand(MarketManager marketManager) {
+    // ✅ FIX: inject GUI, jangan bikin baru
+    public MarketCommand(MarketManager marketManager, MarketGUI marketGUI, MarketMyGUI marketMyGUI) {
         this.marketManager = marketManager;
+        this.marketGUI = marketGUI;
+        this.marketMyGUI = marketMyGUI;
     }
 
     @Override
@@ -28,7 +33,7 @@ public class MarketCommand implements CommandExecutor {
         // =====================
         if (args.length == 0) {
             sendHelp(player);
-            new MarketGUI(marketManager).open(player);
+            marketGUI.open(player); // ✅ FIX
             return true;
         }
 
@@ -44,7 +49,7 @@ public class MarketCommand implements CommandExecutor {
         // /market my
         // =====================
         if (args.length == 1 && args[0].equalsIgnoreCase("my")) {
-            new MarketMyGUI(marketManager).open(player);
+            marketMyGUI.open(player); // ✅ FIX
             return true;
         }
 
@@ -69,8 +74,7 @@ public class MarketCommand implements CommandExecutor {
                 return true;
             }
 
-            marketManager.sellItem(player, item.clone(), price);
-            item.setAmount(0);
+            marketManager.sellItem(player, item, price);
 
             player.sendMessage("§aItem berhasil dijual!");
             return true;
@@ -85,39 +89,17 @@ public class MarketCommand implements CommandExecutor {
         }
 
         // =====================
-        // /market price <id> <harga>
-        // =====================
-        if (args.length == 3 && args[0].equalsIgnoreCase("price")) {
-
-            double price;
-
-            try {
-                price = Double.parseDouble(args[2]);
-            } catch (Exception e) {
-                player.sendMessage("§cHarga tidak valid!");
-                return true;
-            }
-
-            marketManager.updatePrice(player, args[1], price);
-            return true;
-        }
-
-        // =====================
         // DEFAULT
         // =====================
         sendHelp(player);
         return true;
     }
 
-    // =====================
-    // HELP
-    // =====================
     private void sendHelp(Player player) {
         player.sendMessage("§6=== Market Help ===");
         player.sendMessage("§e/market §7- Buka market");
         player.sendMessage("§e/market my §7- Lihat item kamu");
         player.sendMessage("§e/market sell <harga> §7- Jual item di tangan");
         player.sendMessage("§e/market undo <id> §7- Ambil kembali item");
-        player.sendMessage("§e/market price <id> <harga> §7- Ubah harga");
     }
 }

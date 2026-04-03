@@ -30,6 +30,8 @@ public class Main extends JavaPlugin {
     private ShopManager shopManager;
     private QuestManager questManager;
     private MarketManager marketManager;
+    private MarketGUI marketGUI;
+    private MarketMyGUI marketMyGUI;
     private ScoreboardManager scoreboardManager;
     private TransactionLogger transactionLogger;
 
@@ -51,11 +53,9 @@ public class Main extends JavaPlugin {
         transactionLogger = new TransactionLogger(this);
 
         shopManager = new ShopManager(dataManager, economyManager);
-                new ShopGUI(shopManager);
+        new ShopGUI(shopManager);
 
         scoreboardManager = new ScoreboardManager(economyManager);
-
-        // 🔥 CONNECT ECONOMY ↔ SCOREBOARD
         economyManager.setScoreboard(scoreboardManager);
 
         questManager = new QuestManager(this, dataManager, economyManager, scoreboardManager);
@@ -63,13 +63,21 @@ public class Main extends JavaPlugin {
 
         marketManager = new MarketManager(economyManager, this, transactionLogger);
 
+        // ✅ INIT GUI SEKALI
+        marketGUI = new MarketGUI(marketManager);
+        marketMyGUI = new MarketMyGUI(marketManager);
+
         // =====================
         // 🧾 COMMAND REGISTER
         // =====================
         getCommand("money").setExecutor(new MoneyCommand(economyManager));
         getCommand("shop").setExecutor(new ShopCommand(shopManager));
         getCommand("quest").setExecutor(new QuestCommand(questManager));
-        getCommand("market").setExecutor(new MarketCommand(marketManager)); // ✅ FIXED
+
+        // ✅ FIX PENTING
+        getCommand("market").setExecutor(
+                new MarketCommand(marketManager, marketGUI, marketMyGUI)
+        );
 
         // =====================
         // 🎧 LISTENER REGISTER
@@ -86,21 +94,15 @@ public class Main extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(
                 new QuestGUIListener(questManager), this);
 
-        // ❌ MarketListener DIHAPUS (sistem lama)
-
-        // ✅ GUI MARKET (WAJIB)
-        Bukkit.getPluginManager().registerEvents(
-                new MarketGUI(marketManager), this);
-
-        Bukkit.getPluginManager().registerEvents(
-                new MarketMyGUI(marketManager), this);
+        // ✅ REGISTER YANG SUDAH DI-INSTANTIATE
+        Bukkit.getPluginManager().registerEvents(marketGUI, this);
+        Bukkit.getPluginManager().registerEvents(marketMyGUI, this);
 
         Bukkit.getPluginManager().registerEvents(
                 new QuestProgressListener(questManager), this);
 
         Bukkit.getPluginManager().registerEvents(
                 new DeathListener(scoreboardManager), this);
-                
 
         getLogger().info("§a[SMoney] Plugin berhasil dinyalakan!");
     }

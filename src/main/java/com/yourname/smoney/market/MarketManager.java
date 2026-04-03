@@ -30,9 +30,7 @@ public class MarketManager {
         loadItems();
     }
 
-    // =====================
-    // SELL
-    // =====================
+    // ================= SELL =================
     public void sellItem(Player seller, ItemStack item, double price) {
 
         if (item == null || item.getType().isAir()) {
@@ -41,13 +39,15 @@ public class MarketManager {
         }
 
         if (price <= 0) {
-            seller.sendMessage("§cHarga harus lebih dari 0!");
+            seller.sendMessage("§cHarga harus > 0!");
             return;
         }
 
-        // 🔥 FIX: clean item
         ItemStack clone = item.clone();
         clone.setAmount(1);
+
+        // 🔥 HAPUS 1 ITEM DARI PLAYER (INI YANG BENER)
+        item.setAmount(item.getAmount() - 1);
 
         String id = "market-" + UUID.randomUUID();
 
@@ -55,14 +55,10 @@ public class MarketManager {
 
         addItem(marketItem);
 
-        seller.sendMessage("§a✓ Item masuk market!");
-        seller.sendMessage("§7ID: §e" + id);
-        seller.sendMessage("§7Harga: §e" + price);
+        seller.sendMessage("§aItem masuk market!");
     }
 
-    // =====================
-    // BUY
-    // =====================
+    // ================= BUY =================
     public boolean buy(Player buyer, String id) {
 
         if (transactionsInProgress.contains(id)) {
@@ -85,15 +81,14 @@ public class MarketManager {
         transactionsInProgress.add(id);
 
         try {
+
             double price = item.getPrice();
 
-            double money = economy.getMoney(buyer.getUniqueId());
-            if (money < price) {
+            if (economy.getMoney(buyer.getUniqueId()) < price) {
                 buyer.sendMessage("§cUang tidak cukup!");
                 return false;
             }
 
-            // 🔥 FIX: NO DOUBLE CLONE
             ItemStack itemToGive = item.getItem();
 
             if (itemToGive == null || itemToGive.getType().isAir()) {
@@ -115,7 +110,7 @@ public class MarketManager {
             config.set("items." + id, null);
             plugin.saveConfig();
 
-            buyer.sendMessage("§aPembelian berhasil!");
+            buyer.sendMessage("§aBerhasil membeli item!");
             return true;
 
         } finally {
@@ -123,9 +118,7 @@ public class MarketManager {
         }
     }
 
-    // =====================
-    // UNDO
-    // =====================
+    // ================= UNDO =================
     public boolean undo(Player player, String id) {
 
         MarketItem item = items.get(id);
@@ -136,7 +129,7 @@ public class MarketManager {
         }
 
         if (!item.getSeller().equals(player.getUniqueId())) {
-            player.sendMessage("§cIni bukan item kamu!");
+            player.sendMessage("§cBukan item kamu!");
             return false;
         }
 
@@ -146,45 +139,49 @@ public class MarketManager {
         config.set("items." + id, null);
         plugin.saveConfig();
 
-        player.sendMessage("§aItem berhasil diambil!");
+        player.sendMessage("§aItem dikembalikan!");
         return true;
     }
 
-    // =====================
-    // ADD ITEM
-    // =====================
+    // ================= GET SELLER ITEMS =================
+    public List<MarketItem> getItemsBySeller(UUID uuid) {
+
+        List<MarketItem> list = new ArrayList<>();
+
+        for (MarketItem item : items.values()) {
+            if (item.getSeller().equals(uuid)) {
+                list.add(item);
+            }
+        }
+
+        return list;
+    }
+
+    // ================= ADD =================
     public void addItem(MarketItem item) {
 
         items.put(item.getId(), item);
 
-        // 🔥 FIX: SAFE SAVE
-        ItemStack safeItem = item.getItem().clone();
-        safeItem.setAmount(1);
-
         config.set("items." + item.getId() + ".seller", item.getSeller().toString());
         config.set("items." + item.getId() + ".price", item.getPrice());
-        config.set("items." + item.getId() + ".item", safeItem);
+        config.set("items." + item.getId() + ".item", item.getItem());
 
         plugin.saveConfig();
     }
 
-    // =====================
-    // LOAD
-    // =====================
+    // ================= LOAD =================
     public void loadItems() {
 
         if (config.getConfigurationSection("items") == null) return;
 
         for (String id : config.getConfigurationSection("items").getKeys(false)) {
 
-            String path = "items." + id;
-
             try {
-                UUID seller = UUID.fromString(config.getString(path + ".seller"));
-                double price = config.getDouble(path + ".price");
-                ItemStack item = config.getItemStack(path + ".item");
+                UUID seller = UUID.fromString(config.getString("items." + id + ".seller"));
+                double price = config.getDouble("items." + id + ".price");
+                ItemStack item = config.getItemStack("items." + id + ".item");
 
-                if (item == null || item.getType().isAir()) continue;
+                if (item == null) continue;
 
                 items.put(id, new MarketItem(id, seller, item, price));
 
@@ -194,16 +191,12 @@ public class MarketManager {
         }
     }
 
-    // =====================
-    // UTIL
-    // =====================
     private void giveItemSafely(Player player, ItemStack item) {
 
         if (player.getInventory().firstEmpty() != -1) {
             player.getInventory().addItem(item);
         } else {
             player.getWorld().dropItem(player.getLocation(), item);
-            player.sendMessage("§7Inventory penuh, item dijatuhkan.");
         }
     }
 
