@@ -1,17 +1,624 @@
 daily:
-  kill_zombie:
+
+  kill_zombie_1:
     type: KILL
     target: ZOMBIE
+    amount: 15
+    reward: 80
+
+  kill_skeleton_1:
+    type: KILL
+    target: SKELETON
+    amount: 15 
+    reward: 80
+
+  kill_spider:
+    type: KILL
+    target: SPIDER
+    amount: 15
+    reward: 90
+
+  kill_slime:
+    type: KILL
+    target: SLIME
+    amount: 12
+    reward: 120
+
+  kill_drowned:
+    type: KILL
+    target: DROWNED
+    amount: 15
+    reward: 90
+
+  kill_creeper:
+    type: KILL
+    target: CREEPER
     amount: 10
+    reward: 120
+
+  kill_enderman:
+    type: KILL
+    target: ENDERMAN
+    amount: 20
+    reward: 130
+
+  kill_witch:
+    type: KILL
+    target: WITCH
+    amount: 5
+    reward: 150
+
+  kill_cow:
+    type: KILL
+    target: COW
+    amount: 25
+    reward: 100
+
+  kill_pig:
+    type: KILL
+    target: PIG
+    amount: 25
+    reward: 100
+
+  kill_sheep:
+    type: KILL
+    target: SHEEP
+    amount: 25
     reward: 100
 
   mine_stone:
     type: MINE
     target: STONE
-    amount: 50
+    amount: 64
     reward: 80
 
+  mine_coal:
+    type: MINE
+    target: COAL_ORE
+    amount: 20
+    reward: 100
+
+  mine_iron:
+    type: MINE
+    target: IRON_ORE
+    amount: 20
+    reward: 120
+
+  mine_copper:
+    type: MINE
+    target: COPPER_ORE
+    amount: 40
+    reward: 110
+
+  mine_redstone:
+    type: MINE
+    target: REDSTONE_ORE
+    amount: 25
+    reward: 120
+
+  mine_gold:
+    type: MINE
+    target: GOLD_ORE
+    amount: 15
+    reward: 130
+
+  mine_sand:
+    type: MINE
+    target: SAND
+    amount: 100
+    reward: 90
+
+  mine_gravel:
+    type: MINE
+    target: GRAVEL
+    amount: 100
+    reward: 90
+
+  mine_clay:
+    type: MINE
+    target: CLAY
+    amount: 64
+    reward: 140
+
+  walk_1:
+    type: WALK
+    target: NONE
+    amount: 1000
+    reward: 100
+
+  walk_2:
+    type: WALK
+    target: NONE
+    amount: 3000
+    reward: 250
+
+  # === MOB EASY ===
+  kill_zombie_1:
+    type: KILL
+    target: ZOMBIE
+    amount: 15
+    reward: 70
+
+  kill_skeleton_1:
+    type: KILL
+    target: SKELETON
+    amount: 15
+    reward: 70
+
+  kill_spider:
+    type: KILL
+    target: SPIDER
+    amount: 15
+    reward: 90
+
+  kill_slime:
+    type: KILL
+    target: SLIME
+    amount: 12
+    reward: 120
+
+  kill_drowned:
+    type: KILL
+    target: DROWNED
+    amount: 15
+    reward: 90
+
+
+  # === MINE ===
+  mine_stone:
+    type: MINE
+    target: STONE
+    amount: 64
+    reward: 80
+
+  mine_coal:
+    type: MINE
+    target: COAL_ORE
+    amount: 20
+    reward: 100
+
+  mine_iron:
+    type: MINE
+    target: IRON_ORE
+    amount: 20
+    reward: 120
+
+  mine_copper:
+    type: MINE
+    target: COPPER_ORE
+    amount: 40
+    reward: 100
+
+  mine_redstone:
+    type: MINE
+    target: REDSTONE_ORE
+    amount: 25
+    reward: 120
+
+  mine_gold:
+    type: MINE
+    target: GOLD_ORE
+    amount: 15
+    reward: 130
+
+
+  # === FARM / ANIMAL ===
+  kill_cow:
+    type: KILL
+    target: COW
+    amount: 30
+    reward: 100
+
+  kill_pig:
+    type: KILL
+    target: PIG
+    amount: 30
+    reward: 100
+
+  kill_sheep:
+    type: KILL
+    target: SHEEP
+    amount: 30
+    reward: 100
+
+
+  # === WALK (MAX 2) ===
+  walk_1000:
+    type: WALK
+    target: NONE
+    amount: 1000
+    reward: 100
+
+  walk_3000:
+    type: WALK
+    target: NONE
+    amount: 3000
+    reward: 300
+
+
+  # === EXTRA VARIATION ===
+  mine_sand:
+    type: MINE
+    target: SAND
+    amount: 100
+    reward: 100
+
+  mine_gravel:
+    type: MINE
+    target: GRAVEL
+    amount: 100
+    reward: 100
+
+  mine_clay:
+    type: MINE
+    target: CLAY
+    amount: 64
+    reward: 140
+
+  kill_creeper:
+    type: KILL
+    target: CREEPER
+    amount: 10
+    reward: 120
+
+  kill_enderman:
+    type: KILL
+    target: ENDERMAN
+    amount: 60
+    reward: 100
+
+  kill_witch:
+    type: KILL
+    target: WITCH
+    amount: 5
+    reward: 140
+
+  mine_lapis:
+    type: MINE
+    target: LAPIS_ORE
+    amount: 20
+    reward: 130
+
+  kill_zombie_2:
+    type: KILL
+    target: ZOMBIE
+    amount: 50
+    reward: 150
+
+  kill_skeleton_2:
+    type: KILL
+    target: SKELETON
+    amount: 50
+    reward: 150
+
+  mine_obsidian:
+    type: MINE
+    target: OBSIDIAN
+    amount: 16
+    reward: 100
+
+  kill_bat:
+    type: KILL
+    target: BAT
+    amount: 20
+    reward: 150
+
+  mine_dirt:
+    type: MINE
+    target: DIRT
+    amount: 256
+    reward: 150
+
+  kill_zombie_3:
+    type: KILL
+    target: ZOMBIE
+    amount: 30
+    reward: 100
+
+  kill_skeleton_3:
+    type: KILL
+    target: SKELETON
+    amount: 30
+    reward: 100
+
+  kill_zombie:
+    type: KILL
+    target: ZOMBIE
+    amount: 40
+    reward: 110
+
+  mine_stone:
+    type: MINE
+    target: STONE
+    amount: 100
+    reward: 100
+
 weekly:
+
+  kill_zombie_big:
+    type: KILL
+    target: ZOMBIE
+    amount: 150
+    reward: 800
+
+  kill_skeleton_big:
+    type: KILL
+    target: SKELETON
+    amount: 150
+    reward: 800
+
+  kill_spider_big:
+    type: KILL
+    target: SPIDER
+    amount: 120
+    reward: 800
+
+  kill_slime_big:
+    type: KILL
+    target: SLIME
+    amount: 120
+    reward: 900
+
+  kill_creeper_big:
+    type: KILL
+    target: CREEPER
+    amount: 60
+    reward: 1000
+
+  kill_enderman_big:
+    type: KILL
+    target: ENDERMAN
+    amount: 40
+    reward: 1000
+
+  kill_witch_big:
+    type: KILL
+    target: WITCH
+    amount: 20
+    reward: 1200
+
+  kill_animals:
+    type: KILL
+    target: COW
+    amount: 100
+    reward: 700
+
+  kill_pig_big:
+    type: KILL
+    target: PIG
+    amount: 100
+    reward: 700
+
+  kill_sheep_big:
+    type: KILL
+    target: SHEEP
+    amount: 100
+    reward: 700
+
+  mine_iron_big:
+    type: MINE
+    target: IRON_ORE
+    amount: 200
+    reward: 900
+
+  mine_coal_big:
+    type: MINE
+    target: COAL_ORE
+    amount: 300
+    reward: 800
+
+  mine_copper_big:
+    type: MINE
+    target: COPPER_ORE
+    amount: 250
+    reward: 900
+
+  mine_redstone_big:
+    type: MINE
+    target: REDSTONE_ORE
+    amount: 200
+    reward: 1000
+
+  mine_lapis_big:
+    type: MINE
+    target: LAPIS_ORE
+    amount: 150
+    reward: 1100
+
+  mine_gold_big:
+    type: MINE
+    target: GOLD_ORE
+    amount: 120
+    reward: 1200
+
+  mine_diamond:
+    type: MINE
+    target: DIAMOND_ORE
+    amount: 40
+    reward: 2000
+
+  mine_sand_big:
+    type: MINE
+    target: SAND
+    amount: 500
+    reward: 700
+
+  mine_gravel_big:
+    type: MINE
+    target: GRAVEL
+    amount: 500
+    reward: 700
+
+  mine_clay_big:
+    type: MINE
+    target: CLAY
+    amount: 200
+    reward: 900
+
+  walk_week_1:
+    type: WALK
+    target: NONE
+    amount: 5000
+    reward: 600
+
+  walk_week_2:
+    type: WALK
+    target: NONE
+    amount: 10000
+    reward: 1200
+
+  kill_any:
+    type: KILL
+    target: ANY
+    amount: 100
+    reward: 600
+
+  # === CORE GRIND ===
+  kill_zombie_big:
+    type: KILL
+    target: ZOMBIE
+    amount: 150
+    reward: 700
+
+  kill_skeleton_big:
+    type: KILL
+    target: SKELETON
+    amount: 150
+    reward: 700
+
+  kill_spider_big:
+    type: KILL
+    target: SPIDER
+    amount: 120
+    reward: 700
+
+  kill_slime_big:
+    type: KILL
+    target: SLIME
+    amount: 120
+    reward: 800
+
+  kill_drowned_big:
+    type: KILL
+    target: DROWNED
+    amount: 100
+    reward: 700
+
+
+  # === MEDIUM MOBS ===
+  kill_creeper_big:
+    type: KILL
+    target: CREEPER
+    amount: 60
+    reward: 900
+
+  kill_enderman_big:
+    type: KILL
+    target: ENDERMAN
+    amount: 40
+    reward: 900
+
+  kill_witch_big:
+    type: KILL
+    target: WITCH
+    amount: 20
+    reward: 1100
+
+
+  # === MINING ===
+  mine_iron_big:
+    type: MINE
+    target: IRON_ORE
+    amount: 200
+    reward: 800
+
+  mine_coal_big:
+    type: MINE
+    target: COAL_ORE
+    amount: 300
+    reward: 700
+
+  mine_copper_big:
+    type: MINE
+    target: COPPER_ORE
+    amount: 250
+    reward: 800
+
+  mine_redstone_big:
+    type: MINE
+    target: REDSTONE_ORE
+    amount: 200
+    reward: 900
+
+  mine_lapis_big:
+    type: MINE
+    target: LAPIS_ORE
+    amount: 150
+    reward: 900
+
+  mine_gold_big:
+    type: MINE
+    target: GOLD_ORE
+    amount: 120
+    reward: 1000
+
+  mine_diamond:
+    type: MINE
+    target: DIAMOND_ORE
+    amount: 40
+    reward: 1500
+
+
+  # === WALK (MAX 2) ===
+  walk_1000:
+    type: WALK
+    target: NONE
+    amount: 5000
+    reward: 500
+
+  walk_10000:
+    type: WALK
+    target: NONE
+    amount: 10000
+    reward: 1000
+
+
+  # === MIXED ===
+  kill_animals:
+    type: KILL
+    target: COW
+    amount: 100
+    reward: 700
+
+  kill_pig_big:
+    type: KILL
+    target: PIG
+    amount: 100
+    reward: 700
+
+  kill_sheep_big:
+    type: KILL
+    target: SHEEP
+    amount: 100
+    reward: 700
+
+  mine_sand_big:
+    type: MINE
+    target: SAND
+    amount: 500
+    reward: 600
+
+  mine_gravel_big:
+    type: MINE
+    target: GRAVEL
+    amount: 500
+    reward: 600
+
+  mine_clay_big:
+    type: MINE
+    target: CLAY
+    amount: 200
+    reward: 700
   kill_monster:
     type: KILL
     target: ANY
@@ -19,8 +626,9 @@ weekly:
     reward: 500
 
 global:
-  rich_player:
-    type: MONEY
-    target: NONE
-    amount: 10000
-    reward: 2000
+
+  kill_wither:
+    type: KILL
+    target: WITHER
+    amount: 1000
+    reward: 20000

@@ -4,7 +4,7 @@ public class Quest {
 
     private final String id;
     private final QuestType type;
-    private final String targetType; // 🔥 WAJIB ADA
+    private final String targetType;
     private final int target;
     private final double reward;
 
@@ -24,7 +24,7 @@ public class Quest {
         return type;
     }
 
-    public String getTargetType() { // 🔥 WAJIB ADA
+    public String getTargetType() {
         return targetType;
     }
 

@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class QuestGUIListener implements Listener {
 
@@ -20,25 +21,36 @@ public class QuestGUIListener implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
-        // 🔥 CEK GUI TITLE
-        if (!event.getView().getTitle().equals("§8Quest")) return;
+        if (!event.getView().getTitle().equals("§8§lQUEST MENU")) return;
 
-        event.setCancelled(true); // biar item gak bisa diambil
+        event.setCancelled(true);
 
-        if (event.getCurrentItem() == null) return;
-        if (!event.getCurrentItem().hasItemMeta()) return;
-        if (!event.getCurrentItem().getItemMeta().hasDisplayName()) return;
+        ItemStack item = event.getCurrentItem();
+        if (item == null || !item.hasItemMeta()) return;
 
-        String questId = event.getCurrentItem().getItemMeta().getDisplayName();
+        String display = item.getItemMeta().getDisplayName();
+        display = display.replaceAll("§.", "");
 
-        // 🔥 HAPUS WARNA (semua '§x') dan tag seperti [Daily] / [Weekly] / [Global]
-        questId = questId.replaceAll("§.", "");
-        questId = questId.replaceAll("^\\[[^\\]]+\\]\\s*", "");
+        // ambil ID dari lore (lebih aman)
+        if (item.getItemMeta().getLore() == null) return;
 
-        // 🔥 CLAIM QUEST
-        manager.claim(player, questId);
+        String idLine = item.getItemMeta().getLore().get(0);
+        if (!idLine.startsWith("§7ID:")) return;
 
-        // 🔥 REFRESH GUI
+        String questId = idLine.replace("§7ID:", "").trim();
+
+        // detect type
+        QuestType type = null;
+
+        for (String line : item.getItemMeta().getLore()) {
+            if (line.contains("DAILY")) type = QuestType.DAILY;
+            if (line.contains("WEEKLY")) type = QuestType.WEEKLY;
+        }
+
+        if (type == null) return;
+
+        manager.claim(player, questId, type);
+
         new QuestGUI(manager).open(player);
     }
 }

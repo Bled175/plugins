@@ -59,4 +59,12 @@ public class DataManager {
             e.printStackTrace();
         }
     }
+
+    public void saveQuestConfig() {
+        try {
+            questConfig.save(questFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

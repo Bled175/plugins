@@ -1,10 +1,16 @@
 package com.yourname.smoney.listeners;
 
+import com.yourname.smoney.quest.Quest;
 import com.yourname.smoney.quest.QuestManager;
+import com.yourname.smoney.quest.QuestType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 public class QuestListener implements Listener {
 
@@ -17,19 +23,38 @@ public class QuestListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
 
-        if (e.getView().getTitle().equals("§8Quest")) {
-            e.setCancelled(true);
+        // match the GUI title used by QuestGUI
+        if (!"§8§lQUEST MENU".equals(e.getView().getTitle())) return;
 
-            if (e.getCurrentItem() == null) return;
-            if (e.getCurrentItem().getItemMeta() == null) return;
+        e.setCancelled(true);
 
-            Player player = (Player) e.getWhoClicked();
+        ItemStack current = e.getCurrentItem();
+        if (current == null) return;
 
-            String name = e.getCurrentItem().getItemMeta().getDisplayName()
-                    .replace("§a", "")
-                    .replace("§e", "");
+        ItemMeta meta = current.getItemMeta();
+        if (meta == null) return;
 
-            questManager.claim(player, name);
+        Player player = (Player) e.getWhoClicked();
+
+        List<String> lore = meta.getLore();
+        if (lore == null || lore.size() < 2) return;
+
+        // lore format expected: ["§7ID:<id>", "§7TYPE: <TYPE>", ...]
+        String idLine = lore.get(0);
+        String typeLine = lore.get(1);
+
+        if (!idLine.contains("ID:") || !typeLine.contains("TYPE:")) return;
+
+        String questId = idLine.substring(idLine.indexOf("ID:") + 3).trim();
+        String typeStr = typeLine.substring(typeLine.indexOf("TYPE:") + 5).trim();
+
+        QuestType type;
+        try {
+            type = QuestType.valueOf(typeStr.toUpperCase());
+        } catch (Exception ex) {
+            return;
         }
+
+        questManager.claim(player, questId, type);
     }
 }

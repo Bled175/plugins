@@ -7,6 +7,7 @@ import com.yourname.smoney.scoreboard.ScoreboardManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.UUID;
 
@@ -31,9 +32,9 @@ public class PlayerJoinListener implements Listener {
             economy.setMoney(uuid, 100);
         }
 
-        // 🎯 ASSIGN QUEST BARU (MULTI)
-        questManager.assignDaily(e.getPlayer());
-        questManager.assignWeekly(e.getPlayer());
+        // 🎯 RELOAD QUEST DEFINITIONS & ASSIGN/REFRESH
+        questManager.loadQuests();
+        questManager.assignIfMissing(e.getPlayer());
 
         // 👋 MESSAGE
         e.getPlayer().sendMessage("§aSelamat datang!");
@@ -41,5 +42,11 @@ public class PlayerJoinListener implements Listener {
 
         // 📊 SCOREBOARD
         scoreboard.setScoreboard(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        // reset player's session quests on disconnect
+        questManager.resetForPlayer(e.getPlayer());
     }
 }
