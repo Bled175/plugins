@@ -43,12 +43,8 @@ public class QuestProgressListener implements Listener {
                 continue;
             }
 
-            try {
-                if (EntityType.valueOf(target.toUpperCase()) == killed) {
-                    manager.addProgress(player, questId, QuestType.DAILY, 1);
-                }
-            } catch (Exception ex) {
-                Bukkit.getLogger().warning("Invalid mob type: " + target);
+            if (isEntityMatch(killed, target)) {
+                manager.addProgress(player, questId, QuestType.DAILY, 1);
             }
         }
 
@@ -63,12 +59,8 @@ public class QuestProgressListener implements Listener {
                 continue;
             }
 
-            try {
-                if (EntityType.valueOf(target.toUpperCase()) == killed) {
-                    manager.addProgress(player, questId, QuestType.WEEKLY, 1);
-                }
-            } catch (Exception ex) {
-                Bukkit.getLogger().warning("Invalid mob type: " + target);
+            if (isEntityMatch(killed, target)) {
+                manager.addProgress(player, questId, QuestType.WEEKLY, 1);
             }
         }
 
@@ -79,14 +71,23 @@ public class QuestProgressListener implements Listener {
             if (target.equalsIgnoreCase("ANY")) {
                 manager.addProgress(player, globalQuest.getId(), QuestType.GLOBAL, 1);
             } else {
-                try {
-                    if (EntityType.valueOf(target.toUpperCase()) == killed) {
-                        manager.addProgress(player, globalQuest.getId(), QuestType.GLOBAL, 1);
-                    }
-                } catch (Exception ex) {
-                    Bukkit.getLogger().warning("Invalid mob type: " + target);
+                if (isEntityMatch(killed, target)) {
+                    manager.addProgress(player, globalQuest.getId(), QuestType.GLOBAL, 1);
                 }
             }
+        }
+    }
+
+    /**
+     * Safely match entity type with quest target
+     */
+    private boolean isEntityMatch(EntityType killed, String target) {
+        try {
+            EntityType targetType = EntityType.valueOf(target.toUpperCase());
+            return targetType.equals(killed);
+        } catch (IllegalArgumentException ex) {
+            Bukkit.getLogger().warning("[Quest] Invalid entity type in config: " + target);
+            return false;
         }
     }
 
