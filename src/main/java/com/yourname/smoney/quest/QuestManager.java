@@ -1,14 +1,21 @@
 package com.yourname.smoney.quest;
 
-import com.yourname.smoney.data.DataManager;
-import com.yourname.smoney.economy.CurrencyUtil;
-import com.yourname.smoney.economy.EconomyManager;
-import com.yourname.smoney.scoreboard.ScoreboardManager;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import com.yourname.smoney.data.DataManager;
+import com.yourname.smoney.economy.CurrencyUtil;
+import com.yourname.smoney.economy.EconomyManager;
+import com.yourname.smoney.scoreboard.ScoreboardManager;
 
 public class QuestManager {
 
@@ -67,12 +74,14 @@ public class QuestManager {
 
             String path = section + "." + id;
 
+            String description = data.getQuestConfig().getString(path + ".description", id);
+            String actionType = data.getQuestConfig().getString(path + ".type", "KILL");
             String targetType = data.getQuestConfig().getString(path + ".target");
             int target = data.getQuestConfig().getInt(path + ".amount");
             double reward = data.getQuestConfig().getDouble(path + ".reward");
 
             quests.put(type.name() + ":" + id,
-                    new Quest(id, type, targetType, target, reward));
+                    new Quest(id, description, actionType, type, targetType, target, reward));
         }
     }
 
@@ -103,6 +112,22 @@ public class QuestManager {
 
         data.getConfig().set(path, Math.min(current + amount, quest.getTarget()));
         data.save();
+    }
+
+    public void addProgressAsync(Player player, String questId, QuestType type, int amount) {
+        Quest quest = getQuest(questId, type);
+        if (quest == null) return;
+
+        String path = progressPath(player, questId, type);
+
+        int current = data.getConfig().getInt(path, 0);
+
+        if (current >= quest.getTarget()) return;
+
+        data.getConfig().set(path, Math.min(current + amount, quest.getTarget()));
+        
+        // Save async to prevent lag
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> data.save());
     }
 
     // ================= CLAIM =================

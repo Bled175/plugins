@@ -1,15 +1,16 @@
 package com.yourname.smoney.listeners;
 
-import com.yourname.smoney.economy.CurrencyUtil;
-import com.yourname.smoney.economy.EconomyManager;
-import com.yourname.smoney.quest.QuestManager;
-import com.yourname.smoney.scoreboard.ScoreboardManager;
+import java.util.UUID;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.UUID;
+import com.yourname.smoney.economy.CurrencyUtil;
+import com.yourname.smoney.economy.EconomyManager;
+import com.yourname.smoney.quest.QuestManager;
+import com.yourname.smoney.scoreboard.ScoreboardManager;
 
 public class PlayerJoinListener implements Listener {
 
@@ -32,8 +33,7 @@ public class PlayerJoinListener implements Listener {
             economy.setMoney(uuid, 100);
         }
 
-        // 🎯 RELOAD QUEST DEFINITIONS & ASSIGN/REFRESH
-        questManager.loadQuests();
+        // 🎯 ASSIGN/REFRESH QUESTS
         questManager.assignIfMissing(e.getPlayer());
 
         // 👋 MESSAGE
@@ -46,7 +46,7 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        // reset player's session quests on disconnect
-        questManager.resetForPlayer(e.getPlayer());
+        // Jangan reset quest data saat quit - data harus persist untuk session berikutnya
+        // questManager.resetForPlayer(e.getPlayer());
     }
 }

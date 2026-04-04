@@ -1,13 +1,16 @@
 package com.yourname.smoney.quest;
 
-import com.yourname.smoney.economy.CurrencyUtil;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.*;
+import com.yourname.smoney.economy.CurrencyUtil;
 
 public class QuestGUI {
 
@@ -55,9 +58,10 @@ public class QuestGUI {
             ItemStack it = new ItemStack(Material.PAPER);
             ItemMeta m = it.getItemMeta();
 
-            m.setDisplayName((done ? "§a✔ " : "§e✦ ") + id);
+            m.setDisplayName((done ? "§a✔ " : "§e✦ ") + q.getDescription());
             m.setLore(Arrays.asList(
                     "§7ID:" + id,
+                    "§7" + q.getTargetType() + ": " + q.getTarget(),
                     "§7TYPE: DAILY",
                     "§7Progress: " + prog + "/" + q.getTarget(),
                     "§7Reward: " + CurrencyUtil.format(q.getReward()),
@@ -82,9 +86,10 @@ public class QuestGUI {
             ItemStack it = new ItemStack(Material.BOOK);
             ItemMeta m = it.getItemMeta();
 
-            m.setDisplayName((done ? "§a✔ " : "§b✦ ") + id);
+            m.setDisplayName((done ? "§a✔ " : "§b✦ ") + q.getDescription());
             m.setLore(Arrays.asList(
                     "§7ID:" + id,
+                    "§7" + q.getTargetType() + ": " + q.getTarget(),
                     "§7TYPE: WEEKLY",
                     "§7Progress: " + prog + "/" + q.getTarget(),
                     "§7Reward: " + CurrencyUtil.format(q.getReward())
@@ -102,9 +107,10 @@ public class QuestGUI {
             ItemStack it = new ItemStack(Material.EMERALD);
             ItemMeta m = it.getItemMeta();
 
-            m.setDisplayName((done ? "§a✔ " : "§6✦ ") + global.getId());
+            m.setDisplayName((done ? "§a✔ " : "§6✦ ") + global.getDescription());
             m.setLore(Arrays.asList(
                     "§7ID:" + global.getId(),
+                    "§7" + global.getTargetType() + ": " + global.getTarget(),
                     "§7TYPE: GLOBAL",
                     "§7Progress: " + prog + "/" + global.getTarget(),
                     "§7Reward: " + CurrencyUtil.format(global.getReward()),

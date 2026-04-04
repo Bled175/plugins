@@ -1,5 +1,8 @@
 package com.yourname.smoney;
 
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.java.JavaPlugin;
+
 import com.yourname.smoney.commands.MarketCommand;
 import com.yourname.smoney.commands.MoneyCommand;
 import com.yourname.smoney.commands.QuestCommand;
@@ -10,18 +13,16 @@ import com.yourname.smoney.economy.TransactionLogger;
 import com.yourname.smoney.listeners.DeathListener;
 import com.yourname.smoney.listeners.PlayerJoinListener;
 import com.yourname.smoney.listeners.QuestListener;
-import com.yourname.smoney.listeners.QuestProgressListener;
 import com.yourname.smoney.market.MarketGUI;
 import com.yourname.smoney.market.MarketManager;
 import com.yourname.smoney.market.MarketMyGUI;
 import com.yourname.smoney.quest.QuestGUIListener;
 import com.yourname.smoney.quest.QuestManager;
+import com.yourname.smoney.quest.QuestProgressListener;
 import com.yourname.smoney.scoreboard.ScoreboardManager;
+import com.yourname.smoney.shop.ShopGUI;
 import com.yourname.smoney.shop.ShopListener;
 import com.yourname.smoney.shop.ShopManager;
-import com.yourname.smoney.shop.ShopGUI;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin {
 

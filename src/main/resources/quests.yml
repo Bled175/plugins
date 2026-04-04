@@ -1,132 +1,154 @@
 daily:
 
   kill_zombie_1:
+    description: Bunuh 15 Zombie
     type: KILL
     target: ZOMBIE
     amount: 15
     reward: 80
 
   kill_skeleton_1:
+    description: Bunuh 15 Skeleton
     type: KILL
     target: SKELETON
     amount: 15 
     reward: 80
 
   kill_spider:
+    description: Bunuh 15 Spider
     type: KILL
     target: SPIDER
     amount: 15
     reward: 90
 
   kill_slime:
+    description: Bunuh 12 Slime
     type: KILL
     target: SLIME
     amount: 12
     reward: 120
 
   kill_drowned:
+    description: Bunuh 15 Drowned
     type: KILL
     target: DROWNED
     amount: 15
     reward: 90
 
   kill_creeper:
+    description: Bunuh 10 Creeper
     type: KILL
     target: CREEPER
     amount: 10
     reward: 120
 
   kill_enderman:
+    description: Bunuh 20 Enderman
     type: KILL
     target: ENDERMAN
     amount: 20
     reward: 130
 
   kill_witch:
+    description: Bunuh 5 Witch
     type: KILL
     target: WITCH
     amount: 5
     reward: 150
 
   kill_cow:
+    description: Bunuh 25 Cow
     type: KILL
     target: COW
     amount: 25
     reward: 100
 
   kill_pig:
+    description: Bunuh 25 Pig
     type: KILL
     target: PIG
     amount: 25
     reward: 100
 
   kill_sheep:
+    description: Bunuh 25 Sheep
     type: KILL
     target: SHEEP
     amount: 25
     reward: 100
 
   mine_stone:
+    description: Tambang 64 Stone
     type: MINE
     target: STONE
     amount: 64
     reward: 80
 
   mine_coal:
+    description: Tambang 20 Coal Ore
     type: MINE
     target: COAL_ORE
     amount: 20
     reward: 100
 
   mine_iron:
+    description: Tambang 20 Iron Ore
     type: MINE
     target: IRON_ORE
     amount: 20
     reward: 120
 
   mine_copper:
+    description: Tambang 40 Copper Ore
     type: MINE
     target: COPPER_ORE
     amount: 40
     reward: 110
 
   mine_redstone:
+    description: Tambang 25 Redstone Ore
     type: MINE
     target: REDSTONE_ORE
     amount: 25
     reward: 120
 
   mine_gold:
+    description: Tambang 15 Gold Ore
     type: MINE
     target: GOLD_ORE
     amount: 15
     reward: 130
 
   mine_sand:
+    description: Tambang 100 Sand
     type: MINE
     target: SAND
     amount: 100
     reward: 90
 
   mine_gravel:
+    description: Tambang 100 Gravel
     type: MINE
     target: GRAVEL
     amount: 100
     reward: 90
 
   mine_clay:
+    description: Tambang 64 Clay
     type: MINE
     target: CLAY
     amount: 64
     reward: 140
 
   walk_1:
+    description: Jalan 1000 Block
     type: WALK
     target: NONE
     amount: 1000
     reward: 100
 
   walk_2:
+    description: Jalan 3000 Block
     type: WALK
     target: NONE
     amount: 3000
@@ -134,30 +156,35 @@ daily:
 
   # === MOB EASY ===
   kill_zombie_1:
+    description: Bunuh 15 Zombie
     type: KILL
     target: ZOMBIE
     amount: 15
     reward: 70
 
   kill_skeleton_1:
+    description: Bunuh 15 Skeleton
     type: KILL
     target: SKELETON
     amount: 15
     reward: 70
 
   kill_spider:
+    description: Bunuh 15 Spider
     type: KILL
     target: SPIDER
     amount: 15
     reward: 90
 
   kill_slime:
+    description: Bunuh 12 Slime
     type: KILL
     target: SLIME
     amount: 12
     reward: 120
 
   kill_drowned:
+    description: Bunuh 15 Drowned
     type: KILL
     target: DROWNED
     amount: 15
@@ -166,36 +193,42 @@ daily:
 
   # === MINE ===
   mine_stone:
+    description: Tambang 64 Stone
     type: MINE
     target: STONE
     amount: 64
     reward: 80
 
   mine_coal:
+    description: Tambang 20 Coal Ore
     type: MINE
     target: COAL_ORE
     amount: 20
     reward: 100
 
   mine_iron:
+    description: Tambang 20 Iron Ore
     type: MINE
     target: IRON_ORE
     amount: 20
     reward: 120
 
   mine_copper:
+    description: Tambang 40 Copper Ore
     type: MINE
     target: COPPER_ORE
     amount: 40
     reward: 100
 
   mine_redstone:
+    description: Tambang 25 Redstone Ore
     type: MINE
     target: REDSTONE_ORE
     amount: 25
     reward: 120
 
   mine_gold:
+    description: Tambang 15 Gold Ore
     type: MINE
     target: GOLD_ORE
     amount: 15
@@ -204,18 +237,21 @@ daily:
 
   # === FARM / ANIMAL ===
   kill_cow:
+    description: Bunuh 30 Cow
     type: KILL
     target: COW
     amount: 30
     reward: 100
 
   kill_pig:
+    description: Bunuh 30 Pig
     type: KILL
     target: PIG
     amount: 30
     reward: 100
 
   kill_sheep:
+    description: Bunuh 30 Sheep
     type: KILL
     target: SHEEP
     amount: 30
@@ -224,12 +260,14 @@ daily:
 
   # === WALK (MAX 2) ===
   walk_1000:
+    description: Jalan 1000 Block
     type: WALK
     target: NONE
     amount: 1000
     reward: 100
 
   walk_3000:
+    description: Jalan 3000 Block
     type: WALK
     target: NONE
     amount: 3000
@@ -238,96 +276,112 @@ daily:
 
   # === EXTRA VARIATION ===
   mine_sand:
+    description: Tambang 100 Sand
     type: MINE
     target: SAND
     amount: 100
     reward: 100
 
   mine_gravel:
+    description: Tambang 100 Gravel
     type: MINE
     target: GRAVEL
     amount: 100
     reward: 100
 
   mine_clay:
+    description: Tambang 64 Clay
     type: MINE
     target: CLAY
     amount: 64
     reward: 140
 
   kill_creeper:
+    description: Bunuh 10 Creeper
     type: KILL
     target: CREEPER
     amount: 10
     reward: 120
 
   kill_enderman:
+    description: Bunuh 60 Enderman
     type: KILL
     target: ENDERMAN
     amount: 60
     reward: 100
 
   kill_witch:
+    description: Bunuh 5 Witch
     type: KILL
     target: WITCH
     amount: 5
     reward: 140
 
   mine_lapis:
+    description: Tambang 20 Lapis Ore
     type: MINE
     target: LAPIS_ORE
     amount: 20
     reward: 130
 
   kill_zombie_2:
+    description: Bunuh 50 Zombie
     type: KILL
     target: ZOMBIE
     amount: 50
     reward: 150
 
   kill_skeleton_2:
+    description: Bunuh 50 Skeleton
     type: KILL
     target: SKELETON
     amount: 50
     reward: 150
 
   mine_obsidian:
+    description: Tambang 16 Obsidian
     type: MINE
     target: OBSIDIAN
     amount: 16
     reward: 100
 
   kill_bat:
+    description: Bunuh 20 Bat
     type: KILL
     target: BAT
     amount: 20
     reward: 150
 
   mine_dirt:
+    description: Tambang 256 Dirt
     type: MINE
     target: DIRT
     amount: 256
     reward: 150
 
   kill_zombie_3:
+    description: Bunuh 30 Zombie
     type: KILL
     target: ZOMBIE
     amount: 30
     reward: 100
 
   kill_skeleton_3:
+    description: Bunuh 30 Skeleton
     type: KILL
     target: SKELETON
     amount: 30
     reward: 100
 
   kill_zombie:
+    description: Bunuh 40 Zombie
     type: KILL
     target: ZOMBIE
     amount: 40
     reward: 110
 
   mine_stone:
+    description: Tambang 100 Stone
     type: MINE
     target: STONE
     amount: 100
@@ -336,138 +390,161 @@ daily:
 weekly:
 
   kill_zombie_big:
+    description: Bunuh 150 Zombie
     type: KILL
     target: ZOMBIE
     amount: 150
     reward: 800
 
   kill_skeleton_big:
+    description: Bunuh 150 Skeleton
     type: KILL
     target: SKELETON
     amount: 150
     reward: 800
 
   kill_spider_big:
+    description: Bunuh 120 Spider
     type: KILL
     target: SPIDER
     amount: 120
     reward: 800
 
   kill_slime_big:
+    description: Bunuh 120 Slime
     type: KILL
     target: SLIME
     amount: 120
     reward: 900
 
   kill_creeper_big:
+    description: Bunuh 60 Creeper
     type: KILL
     target: CREEPER
     amount: 60
     reward: 1000
 
   kill_enderman_big:
+    description: Bunuh 40 Enderman
     type: KILL
     target: ENDERMAN
     amount: 40
     reward: 1000
 
   kill_witch_big:
+    description: Bunuh 20 Witch
     type: KILL
     target: WITCH
     amount: 20
     reward: 1200
 
   kill_animals:
+    description: Bunuh 100 Cow
     type: KILL
     target: COW
     amount: 100
     reward: 700
 
   kill_pig_big:
+    description: Bunuh 100 Pig
     type: KILL
     target: PIG
     amount: 100
     reward: 700
 
   kill_sheep_big:
+    description: Bunuh 100 Sheep
     type: KILL
     target: SHEEP
     amount: 100
     reward: 700
 
   mine_iron_big:
+    description: Tambang 200 Iron Ore
     type: MINE
     target: IRON_ORE
     amount: 200
     reward: 900
 
   mine_coal_big:
+    description: Tambang 300 Coal Ore
     type: MINE
     target: COAL_ORE
     amount: 300
     reward: 800
 
   mine_copper_big:
+    description: Tambang 250 Copper Ore
     type: MINE
     target: COPPER_ORE
     amount: 250
     reward: 900
 
   mine_redstone_big:
+    description: Tambang 200 Redstone Ore
     type: MINE
     target: REDSTONE_ORE
     amount: 200
     reward: 1000
 
   mine_lapis_big:
+    description: Tambang 150 Lapis Ore
     type: MINE
     target: LAPIS_ORE
     amount: 150
     reward: 1100
 
   mine_gold_big:
+    description: Tambang 120 Gold Ore
     type: MINE
     target: GOLD_ORE
     amount: 120
     reward: 1200
 
   mine_diamond:
+    description: Tambang 40 Diamond Ore
     type: MINE
     target: DIAMOND_ORE
     amount: 40
     reward: 2000
 
   mine_sand_big:
+    description: Tambang 500 Sand
     type: MINE
     target: SAND
     amount: 500
     reward: 700
 
   mine_gravel_big:
+    description: Tambang 500 Gravel
     type: MINE
     target: GRAVEL
     amount: 500
     reward: 700
 
   mine_clay_big:
+    description: Tambang 200 Clay
     type: MINE
     target: CLAY
     amount: 200
     reward: 900
 
   walk_week_1:
+    description: Jalan 5000 Block
     type: WALK
     target: NONE
     amount: 5000
     reward: 600
 
   walk_week_2:
+    description: Jalan 10000 Block
     type: WALK
     target: NONE
     amount: 10000
     reward: 1200
 
   kill_any:
+    description: Bunuh 100 Mob Apapun
     type: KILL
     target: ANY
     amount: 100
@@ -475,30 +552,35 @@ weekly:
 
   # === CORE GRIND ===
   kill_zombie_big:
+    description: Bunuh 150 Zombie
     type: KILL
     target: ZOMBIE
     amount: 150
     reward: 700
 
   kill_skeleton_big:
+    description: Bunuh 150 Skeleton
     type: KILL
     target: SKELETON
     amount: 150
     reward: 700
 
   kill_spider_big:
+    description: Bunuh 120 Spider
     type: KILL
     target: SPIDER
     amount: 120
     reward: 700
 
   kill_slime_big:
+    description: Bunuh 120 Slime
     type: KILL
     target: SLIME
     amount: 120
     reward: 800
 
   kill_drowned_big:
+    description: Bunuh 100 Drowned
     type: KILL
     target: DROWNED
     amount: 100
@@ -507,18 +589,21 @@ weekly:
 
   # === MEDIUM MOBS ===
   kill_creeper_big:
+    description: Bunuh 60 Creeper
     type: KILL
     target: CREEPER
     amount: 60
     reward: 900
 
   kill_enderman_big:
+    description: Bunuh 40 Enderman
     type: KILL
     target: ENDERMAN
     amount: 40
     reward: 900
 
   kill_witch_big:
+    description: Bunuh 20 Witch
     type: KILL
     target: WITCH
     amount: 20
@@ -527,42 +612,49 @@ weekly:
 
   # === MINING ===
   mine_iron_big:
+    description: Tambang 200 Iron Ore
     type: MINE
     target: IRON_ORE
     amount: 200
     reward: 800
 
   mine_coal_big:
+    description: Tambang 300 Coal Ore
     type: MINE
     target: COAL_ORE
     amount: 300
     reward: 700
 
   mine_copper_big:
+    description: Tambang 250 Copper Ore
     type: MINE
     target: COPPER_ORE
     amount: 250
     reward: 800
 
   mine_redstone_big:
+    description: Tambang 200 Redstone Ore
     type: MINE
     target: REDSTONE_ORE
     amount: 200
     reward: 900
 
   mine_lapis_big:
+    description: Tambang 150 Lapis Ore
     type: MINE
     target: LAPIS_ORE
     amount: 150
     reward: 900
 
   mine_gold_big:
+    description: Tambang 120 Gold Ore
     type: MINE
     target: GOLD_ORE
     amount: 120
     reward: 1000
 
   mine_diamond:
+    description: Tambang 40 Diamond Ore
     type: MINE
     target: DIAMOND_ORE
     amount: 40
@@ -571,12 +663,14 @@ weekly:
 
   # === WALK (MAX 2) ===
   walk_1000:
+    description: Jalan 5000 Block
     type: WALK
     target: NONE
     amount: 5000
     reward: 500
 
   walk_10000:
+    description: Jalan 10000 Block
     type: WALK
     target: NONE
     amount: 10000
@@ -585,41 +679,49 @@ weekly:
 
   # === MIXED ===
   kill_animals:
+    description: Bunuh 100 Cow
     type: KILL
     target: COW
     amount: 100
     reward: 700
 
   kill_pig_big:
+    description: Bunuh 100 Pig
     type: KILL
     target: PIG
     amount: 100
     reward: 700
 
   kill_sheep_big:
+    description: Bunuh 100 Sheep
     type: KILL
     target: SHEEP
     amount: 100
     reward: 700
 
   mine_sand_big:
+    description: Tambang 500 Sand
     type: MINE
     target: SAND
     amount: 500
     reward: 600
 
   mine_gravel_big:
+    description: Tambang 500 Gravel
     type: MINE
     target: GRAVEL
     amount: 500
     reward: 600
 
   mine_clay_big:
+    description: Tambang 200 Clay
     type: MINE
     target: CLAY
     amount: 200
     reward: 700
+
   kill_monster:
+    description: Bunuh 100 Mob
     type: KILL
     target: ANY
     amount: 100
@@ -628,6 +730,7 @@ weekly:
 global:
 
   kill_wither:
+    description: Bunuh 1000 Wither
     type: KILL
     target: WITHER
     amount: 1000

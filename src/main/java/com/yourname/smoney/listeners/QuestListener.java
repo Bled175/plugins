@@ -1,8 +1,7 @@
 package com.yourname.smoney.listeners;
 
-import com.yourname.smoney.quest.Quest;
-import com.yourname.smoney.quest.QuestManager;
-import com.yourname.smoney.quest.QuestType;
+import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +9,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
+import com.yourname.smoney.quest.QuestManager;
+import com.yourname.smoney.quest.QuestType;
 
 public class QuestListener implements Listener {
 
@@ -37,11 +37,11 @@ public class QuestListener implements Listener {
         Player player = (Player) e.getWhoClicked();
 
         List<String> lore = meta.getLore();
-        if (lore == null || lore.size() < 2) return;
+        if (lore == null || lore.size() < 3) return;
 
-        // lore format expected: ["§7ID:<id>", "§7TYPE: <TYPE>", ...]
+        // lore format: ["§7ID:<id>", "§7<TARGET>: <amount>", "§7TYPE: <TYPE>", ...]
         String idLine = lore.get(0);
-        String typeLine = lore.get(1);
+        String typeLine = lore.get(2);
 
         if (!idLine.contains("ID:") || !typeLine.contains("TYPE:")) return;
 
