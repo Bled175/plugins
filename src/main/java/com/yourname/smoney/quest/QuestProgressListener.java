@@ -103,7 +103,7 @@ public class QuestProgressListener implements Listener {
             Quest q = manager.getQuest(questId, QuestType.DAILY);
             if (q == null || !q.getActionType().equals("MINE")) continue;
 
-            if (m.name().equalsIgnoreCase(q.getTargetType())) {
+            if (isMaterialMatches(m, q.getTargetType())) {
                 manager.addProgress(p, questId, QuestType.DAILY, 1);
             }
         }
@@ -113,7 +113,7 @@ public class QuestProgressListener implements Listener {
             Quest q = manager.getQuest(questId, QuestType.WEEKLY);
             if (q == null || !q.getActionType().equals("MINE")) continue;
 
-            if (m.name().equalsIgnoreCase(q.getTargetType())) {
+            if (isMaterialMatches(m, q.getTargetType())) {
                 manager.addProgress(p, questId, QuestType.WEEKLY, 1);
             }
         }
@@ -121,7 +121,7 @@ public class QuestProgressListener implements Listener {
         // Check global quest
         Quest globalQuest = manager.getGlobalQuest();
         if (globalQuest != null && globalQuest.getActionType().equals("MINE")) {
-            if (m.name().equalsIgnoreCase(globalQuest.getTargetType())) {
+            if (isMaterialMatches(m, globalQuest.getTargetType())) {
                 manager.addProgress(p, globalQuest.getId(), QuestType.GLOBAL, 1);
             }
         }
@@ -162,5 +162,51 @@ public class QuestProgressListener implements Listener {
         if (globalQuest != null && globalQuest.getActionType().equals("WALK")) {
             manager.addProgressAsync(p, globalQuest.getId(), QuestType.GLOBAL, 1);
         }
+    }
+
+    /**
+     * Match material dengan ore variants
+     * Misal: DRIPSTONE_ORE akan match DRIPSTONE_ORE dan DEEPSLATE_DRIPSTONE_ORE
+     */
+    private boolean isMaterialMatches(Material mat, String targetType) {
+        String matName = mat.name().toUpperCase();
+        String targetName = targetType.toUpperCase();
+        
+        // Exact match
+        if (matName.equals(targetName)) {
+            return true;
+        }
+        
+        // Match ore variants (untuk deepslate versions)
+        // Jika target DRIPSTONE_ORE, maka cocok dengan DRIPSTONE_ORE dan DEEPSLATE_DRIPSTONE_ORE
+        if (targetName.equals("DRIPSTONE_ORE")) {
+            return matName.equals("DRIPSTONE_ORE") || matName.equals("DEEPSLATE_DRIPSTONE_ORE");
+        }
+        if (targetName.equals("COPPER_ORE")) {
+            return matName.equals("COPPER_ORE") || matName.equals("DEEPSLATE_COPPER_ORE");
+        }
+        if (targetName.equals("IRON_ORE")) {
+            return matName.equals("IRON_ORE") || matName.equals("DEEPSLATE_IRON_ORE");
+        }
+        if (targetName.equals("GOLD_ORE")) {
+            return matName.equals("GOLD_ORE") || matName.equals("DEEPSLATE_GOLD_ORE");
+        }
+        if (targetName.equals("COAL_ORE")) {
+            return matName.equals("COAL_ORE") || matName.equals("DEEPSLATE_COAL_ORE");
+        }
+        if (targetName.equals("EMERALD_ORE")) {
+            return matName.equals("EMERALD_ORE") || matName.equals("DEEPSLATE_EMERALD_ORE");
+        }
+        if (targetName.equals("LAPIS_ORE")) {
+            return matName.equals("LAPIS_ORE") || matName.equals("DEEPSLATE_LAPIS_ORE");
+        }
+        if (targetName.equals("REDSTONE_ORE")) {
+            return matName.equals("REDSTONE_ORE") || matName.equals("DEEPSLATE_REDSTONE_ORE");
+        }
+        if (targetName.equals("DIAMOND_ORE")) {
+            return matName.equals("DIAMOND_ORE") || matName.equals("DEEPSLATE_DIAMOND_ORE");
+        }
+        
+        return false;
     }
 }
